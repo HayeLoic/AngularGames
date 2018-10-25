@@ -1,3 +1,7 @@
-<p>
-  tic-tac-toe works!
-</p>
+<div class="container">
+  <div *ngIf="squares" class="row row-squares">
+    <div *ngFor="let square of squares" class="col-4 square">
+      {{square.id}}
+    </div>
+  </div>
+</div>
