@@ -2,13 +2,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './/app-routing.module';
+import { TicTacToeComponent } from './tic-tac-toe/tic-tac-toe.component';
+import { OtherComponent } from './other/other.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TicTacToeComponent,
+    OtherComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
