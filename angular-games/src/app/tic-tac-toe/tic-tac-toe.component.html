@@ -1,8 +1,13 @@
 <div class="container">
-  <div *ngIf="squares" class="row row-squares">
-    <span>
+  <div class="informations-container">
+    <span *ngIf="currentPlayer && !winner">
       Prochain joueur : {{currentPlayer.symbol}}
     </span>
+    <span *ngIf="winner">
+      Gagnant : {{winner.symbol}}
+    </span>
+  </div>
+  <div *ngIf="squares" class="row row-squares">
     <div *ngFor="let square of squares" (click)="squareClick(square)" class="col-4 square">
       {{square.value}}
     </div>

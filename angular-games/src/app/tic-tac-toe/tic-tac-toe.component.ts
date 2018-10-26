@@ -10,8 +10,19 @@ import { Player } from './player';
 export class TicTacToeComponent implements OnInit {
   squares: Square[] = [];
   players: Player[] = [];
-  maxSquareCount: Number = 9;
+  maxSquareCount: number = 9;
   currentPlayer: Player = null;
+  winner: Player = null;
+  winningCombinations: Array<[number, number, number]> = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    [1, 4, 7],
+    [2, 5, 8],
+    [3, 6, 9],
+    [1, 5, 9],
+    [3, 5, 7]
+  ];
 
   constructor() { }
 
@@ -21,7 +32,7 @@ export class TicTacToeComponent implements OnInit {
     this.currentPlayer = this.players[0];
   }
 
-  initializeSquares(maxSquareCount: Number): Square[] {
+  initializeSquares(maxSquareCount: number): Square[] {
     let squares: Square[] = [];
     for (let squareCount = 1; squareCount <= maxSquareCount; squareCount++) {
       squares.push(new Square(squareCount, ''));
@@ -37,10 +48,15 @@ export class TicTacToeComponent implements OnInit {
   }
 
   squareClick(square: Square): void {
-    if (!square.value) {
+    if (this.isPossibleToPlay(square, this.winner) {
       square = this.updateSquareValue(square, this.currentPlayer);
+      this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
       this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
     }
+  }
+
+  isPossibleToPlay(square: Square, winner: Player): boolean {
+    return !square.value && !winner;
   }
 
   updateSquareValue(square: Square, currentPlayer: Player): Square {
@@ -48,11 +64,22 @@ export class TicTacToeComponent implements OnInit {
     return square;
   }
 
+  determineWinner(winningCombinations: Array<[number, number, number]>, squares: Square[], player: Player): Player {
+    let winner: Player = null;
+    for (let winningCombination of winningCombinations) {
+      if (squares[winningCombination[0] - 1].value == player.symbol
+        && squares[winningCombination[1] - 1].value == player.symbol
+        && squares[winningCombination[2] - 1].value == player.symbol) {
+        winner = player;
+      }
+    }
+    return winner;
+  }
+
   updateCurrentPlayer(currentPlayer: Player, players: Player[]): Player {
     if (currentPlayer == players[0]) {
       return players[1];
     }
-
     else {
       return players[0];
     }
