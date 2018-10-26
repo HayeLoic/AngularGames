@@ -23,6 +23,7 @@ export class TicTacToeComponent implements OnInit {
     [1, 5, 9],
     [3, 5, 7]
   ];
+  tryToMoveIntervalInMilliseconds: number = 2000;
 
   constructor() { }
 
@@ -35,6 +36,7 @@ export class TicTacToeComponent implements OnInit {
     this.players = this.initializePlayers();
     this.currentPlayer = this.players[0];
     this.winner = null;
+    setInterval(() => this.artificialIntelligenceTryToMove(this.currentPlayer, this.winner), this.tryToMoveIntervalInMilliseconds);
   }
 
   initializeSquares(maxSquareCount: number): Square[] {
@@ -47,21 +49,36 @@ export class TicTacToeComponent implements OnInit {
 
   initializePlayers(): Player[] {
     let players: Player[] = [];
-    players.push(new Player(1, 'X'));
-    players.push(new Player(2, 'O'));
+    players.push(new Player(1, 'X', true));
+    players.push(new Player(2, 'O', false));
     return players;
   }
 
-  squareClick(square: Square): void {
-    if (this.isPossibleToPlay(square, this.winner)) {
-      square = this.updateSquareValue(square, this.currentPlayer);
-      this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
-      this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
+  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player) {
+    if (currentPlayer && !currentPlayer.isHuman && !winner) {
+      for (let square of this.squares) {
+        if (!square.value) {
+          this.makeMove(square);
+          break;
+        }
+      }
     }
   }
 
-  isPossibleToPlay(square: Square, winner: Player): boolean {
-    return !square.value && !winner;
+  squareClick(square: Square): void {
+    if (this.isPossibleToPlay(square, this.winner, this.currentPlayer)) {
+      this.makeMove(square);
+    }
+  }
+
+  isPossibleToPlay(square: Square, winner: Player, currentPlayer: Player): boolean {
+    return !square.value && !winner && currentPlayer.isHuman;
+  }
+
+  makeMove(square: Square): void {
+    square = this.updateSquareValue(square, this.currentPlayer);
+    this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
+    this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
   }
 
   updateSquareValue(square: Square, currentPlayer: Player): Square {
