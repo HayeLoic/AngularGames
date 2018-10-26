@@ -1,4 +1,4 @@
-<div class="container">
+<div>
   <div class="informations-container">
     <span *ngIf="currentPlayer && !winner">
       Prochain joueur : {{currentPlayer.symbol}}
@@ -7,9 +7,37 @@
       Gagnant : {{winner.symbol}}
     </span>
   </div>
-  <div *ngIf="squares" class="row row-squares">
-    <div *ngFor="let square of squares" (click)="squareClick(square)" class="col-4 square">
-      {{square.value}}
+  <div class="container-fluid">
+    <div *ngIf="squares" class="row row-squares">
+      <div *ngFor="let square of squares" (click)="squareClick(square)" class="col-4 square">
+        {{square.value}}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isFirstMoveDone()" class="start-new-game-container">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalStartNewGame">
+      Commencer une nouvelle partie
+    </button>
+  </div>
+</div>
+<div class="modal fade" id="modalStartNewGame" tabindex="-1" role="dialog" aria-labelledby="modalStartNewGameLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalStartNewGameLabel">Nouvelle partie</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Voulez-vous commencer une nouvelle partie ?</p>
+        <p>La partie en cours sera perdue.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="startNewGame()">Oui</button>
+      </div>
     </div>
   </div>
 </div>

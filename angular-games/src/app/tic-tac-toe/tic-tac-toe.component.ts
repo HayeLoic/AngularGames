@@ -27,6 +27,10 @@ export class TicTacToeComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.startNewGame();
+  }
+
+  startNewGame() {
     this.squares = this.initializeSquares(this.maxSquareCount);
     this.players = this.initializePlayers();
     this.currentPlayer = this.players[0];
@@ -65,15 +69,14 @@ export class TicTacToeComponent implements OnInit {
   }
 
   determineWinner(winningCombinations: Array<[number, number, number]>, squares: Square[], player: Player): Player {
-    let winner: Player = null;
     for (let winningCombination of winningCombinations) {
       if (squares[winningCombination[0] - 1].value == player.symbol
         && squares[winningCombination[1] - 1].value == player.symbol
         && squares[winningCombination[2] - 1].value == player.symbol) {
-        winner = player;
+        return player;
       }
     }
-    return winner;
+    return null;
   }
 
   updateCurrentPlayer(currentPlayer: Player, players: Player[]): Player {
@@ -83,5 +86,14 @@ export class TicTacToeComponent implements OnInit {
     else {
       return players[0];
     }
+  }
+
+  isFirstMoveDone(): boolean {
+    for (let square of this.squares) {
+      if (square.value) {
+        return true;
+      }
+    }
+    return false;
   }
 }
