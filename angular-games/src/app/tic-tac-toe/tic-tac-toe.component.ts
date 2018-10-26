@@ -48,7 +48,7 @@ export class TicTacToeComponent implements OnInit {
   }
 
   squareClick(square: Square): void {
-    if (this.isPossibleToPlay(square, this.winner) {
+    if (this.isPossibleToPlay(square, this.winner)) {
       square = this.updateSquareValue(square, this.currentPlayer);
       this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
       this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
