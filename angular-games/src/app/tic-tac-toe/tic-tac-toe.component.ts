@@ -34,6 +34,7 @@ export class TicTacToeComponent implements OnInit {
     this.squares = this.initializeSquares(this.maxSquareCount);
     this.players = this.initializePlayers();
     this.currentPlayer = this.players[0];
+    this.winner = null;
   }
 
   initializeSquares(maxSquareCount: number): Square[] {
