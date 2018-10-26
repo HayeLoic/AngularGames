@@ -1,10 +1,13 @@
 <div>
   <div class="informations-container">
-    <span *ngIf="currentPlayer && !winner">
+    <span *ngIf="currentPlayer && !winner && !isDrawMatch">
       Prochain joueur : {{currentPlayer.symbol}}
     </span>
     <span *ngIf="winner">
       Gagnant : {{winner.symbol}}
+    </span>
+    <span *ngIf="isDrawMatch">
+      Match nul !
     </span>
   </div>
   <div class="container-fluid">
