@@ -1,0 +1,20 @@
+.informations-container {
+    margin-bottom: 10px;
+}
+
+.row-squares {
+    width: 150px;
+}
+
+.square {
+    height: 50px;
+    border-style: solid;
+    border-width: 1px;
+    text-align: center;
+    padding-top: 12px;
+    cursor: pointer;
+}
+
+.start-new-game-container {
+    margin-top: 10px;
+}
