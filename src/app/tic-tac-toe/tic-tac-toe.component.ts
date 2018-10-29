@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Square } from './square';
 import { Player } from './player';
+import { DifficultyLevel } from './difficulty-level';
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -51,15 +52,15 @@ export class TicTacToeComponent implements OnInit {
 
   initializePlayers(): Player[] {
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true));
-    players.push(new Player(2, 'O', false));
+    players.push(new Player(1, 'X', true, DifficultyLevel.None));
+    players.push(new Player(2, 'O', false, DifficultyLevel.Medium));
     return players;
   }
 
   artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[]) {
     if (this.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)) {
       let enableSquares: Square[] = this.getEnableSquares(squares);
-      let squareToPlay = this.chooseSquare(enableSquares);
+      let squareToPlay = this.chooseSquare(squares, enableSquares, currentPlayer.difficultyLevel);
       this.makeMove(squareToPlay);
     }
   }
@@ -68,10 +69,47 @@ export class TicTacToeComponent implements OnInit {
     return squares.filter(square => !square.value);
   }
 
-  chooseSquare(squares: Square[]): Square {
+  chooseSquare(squares: Square[], enableSquares: Square[], difficultyLevel: DifficultyLevel): Square {
+    let squareIdToPlay: number;
+    if (difficultyLevel == DifficultyLevel.Easy) {
+      squareIdToPlay = this.getRandomSquareId(enableSquares);
+      return enableSquares[squareIdToPlay];
+    }
+    else {
+      squareIdToPlay = this.getWinningSquareId(squares, this.winningCombinations, this.currentPlayer);
+      if (squareIdToPlay) {
+        return squares[squareIdToPlay];
+      }
+      else {
+        squareIdToPlay = this.getRandomSquareId(enableSquares);
+        return enableSquares[squareIdToPlay];
+      }
+    }
+  }
+
+  getRandomSquareId(squares: Square[]): number {
     let max: number = squares.length - 1;
-    let randomNumber: number = Math.floor(Math.random() * max);
-    return squares[randomNumber];
+    return Math.floor(Math.random() * max);
+  }
+
+  getWinningSquareId(squares: Square[], winningCombinations: Array<[number, number, number]>, player: Player): number {
+    for (let winningCombination of winningCombinations) {
+      if (squares[winningCombination[0] - 1].value == player.symbol
+        && squares[winningCombination[1] - 1].value == player.symbol
+        && !squares[winningCombination[2] - 1].value) {
+        return winningCombination[2] - 1;
+      }
+      if (squares[winningCombination[0] - 1].value == player.symbol
+        && !squares[winningCombination[1] - 1].value
+        && squares[winningCombination[2] - 1].value == player.symbol) {
+        return winningCombination[1] - 1;
+      }
+      if (squares[winningCombination[0] - 1].value == player.symbol
+        && squares[winningCombination[1] - 1].value == player.symbol
+        && !squares[winningCombination[2] - 1].value) {
+        return winningCombination[0] - 1;
+      }
+    }
   }
 
   squareClick(square: Square): void {
