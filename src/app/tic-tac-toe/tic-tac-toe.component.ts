@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Square } from './square';
 import { Player } from './player';
 import { DifficultyLevel } from './difficulty-level';
+import { ArtificialIntelligenceBrainService } from './artificial-intelligence-brain.service';
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -27,7 +28,7 @@ export class TicTacToeComponent implements OnInit {
   ];
   tryToMoveIntervalInMilliseconds: number = 2000;
 
-  constructor() { }
+  constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService) { }
 
   ngOnInit() {
     this.startNewGame();
@@ -39,7 +40,14 @@ export class TicTacToeComponent implements OnInit {
     this.currentPlayer = this.players[0];
     this.winner = null;
     this.isDrawMatch = false;
-    setInterval(() => this.artificialIntelligenceTryToMove(this.currentPlayer, this.winner, this.isDrawMatch, this.squares), this.tryToMoveIntervalInMilliseconds);
+    setInterval(
+      () => this.artificialIntelligenceTryToMove(
+        this.currentPlayer,
+        this.winner,
+        this.isDrawMatch,
+        this.squares,
+        this.winningCombinations),
+      this.tryToMoveIntervalInMilliseconds);
   }
 
   initializeSquares(maxSquareCount: number): Square[] {
@@ -57,59 +65,16 @@ export class TicTacToeComponent implements OnInit {
     return players;
   }
 
-  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[]) {
+  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[], winningCombinations: Array<[number, number, number]>) {
     if (this.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)) {
       let enableSquares: Square[] = this.getEnableSquares(squares);
-      let squareToPlay = this.chooseSquare(squares, enableSquares, currentPlayer.difficultyLevel);
+      let squareToPlay = this.artificialIntelligenceBrainService.chooseSquare(squares, enableSquares, currentPlayer.difficultyLevel, winningCombinations, currentPlayer);
       this.makeMove(squareToPlay);
     }
   }
 
   getEnableSquares(squares: Square[]): Square[] {
     return squares.filter(square => !square.value);
-  }
-
-  chooseSquare(squares: Square[], enableSquares: Square[], difficultyLevel: DifficultyLevel): Square {
-    let squareIdToPlay: number;
-    if (difficultyLevel == DifficultyLevel.Easy) {
-      squareIdToPlay = this.getRandomSquareId(enableSquares);
-      return enableSquares[squareIdToPlay];
-    }
-    else {
-      squareIdToPlay = this.getWinningSquareId(squares, this.winningCombinations, this.currentPlayer);
-      if (squareIdToPlay) {
-        return squares[squareIdToPlay];
-      }
-      else {
-        squareIdToPlay = this.getRandomSquareId(enableSquares);
-        return enableSquares[squareIdToPlay];
-      }
-    }
-  }
-
-  getRandomSquareId(squares: Square[]): number {
-    let max: number = squares.length - 1;
-    return Math.floor(Math.random() * max);
-  }
-
-  getWinningSquareId(squares: Square[], winningCombinations: Array<[number, number, number]>, player: Player): number {
-    for (let winningCombination of winningCombinations) {
-      if (squares[winningCombination[0] - 1].value == player.symbol
-        && squares[winningCombination[1] - 1].value == player.symbol
-        && !squares[winningCombination[2] - 1].value) {
-        return winningCombination[2] - 1;
-      }
-      if (squares[winningCombination[0] - 1].value == player.symbol
-        && !squares[winningCombination[1] - 1].value
-        && squares[winningCombination[2] - 1].value == player.symbol) {
-        return winningCombination[1] - 1;
-      }
-      if (squares[winningCombination[0] - 1].value == player.symbol
-        && squares[winningCombination[1] - 1].value == player.symbol
-        && !squares[winningCombination[2] - 1].value) {
-        return winningCombination[0] - 1;
-      }
-    }
   }
 
   squareClick(square: Square): void {
