@@ -11,8 +11,9 @@ export class TicTacToeComponent implements OnInit {
   squares: Square[] = [];
   players: Player[] = [];
   maxSquareCount: number = 9;
-  currentPlayer: Player = null;
-  winner: Player = null;
+  currentPlayer: Player;
+  winner: Player;
+  isDrawMatch: boolean;
   winningCombinations: Array<[number, number, number]> = [
     [1, 2, 3],
     [4, 5, 6],
@@ -23,6 +24,7 @@ export class TicTacToeComponent implements OnInit {
     [1, 5, 9],
     [3, 5, 7]
   ];
+  tryToMoveIntervalInMilliseconds: number = 2000;
 
   constructor() { }
 
@@ -35,6 +37,8 @@ export class TicTacToeComponent implements OnInit {
     this.players = this.initializePlayers();
     this.currentPlayer = this.players[0];
     this.winner = null;
+    this.isDrawMatch = false;
+    setInterval(() => this.artificialIntelligenceTryToMove(this.currentPlayer, this.winner, this.isDrawMatch, this.squares), this.tryToMoveIntervalInMilliseconds);
   }
 
   initializeSquares(maxSquareCount: number): Square[] {
@@ -47,21 +51,48 @@ export class TicTacToeComponent implements OnInit {
 
   initializePlayers(): Player[] {
     let players: Player[] = [];
-    players.push(new Player(1, 'X'));
-    players.push(new Player(2, 'O'));
+    players.push(new Player(1, 'X', true));
+    players.push(new Player(2, 'O', false));
     return players;
   }
 
-  squareClick(square: Square): void {
-    if (this.isPossibleToPlay(square, this.winner)) {
-      square = this.updateSquareValue(square, this.currentPlayer);
-      this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
-      this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
+  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[]) {
+    if (this.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)) {
+      let enableSquares: Square[] = this.getEnableSquares(squares);
+      let squareToPlay = this.chooseSquare(enableSquares);
+      this.makeMove(squareToPlay);
     }
   }
 
-  isPossibleToPlay(square: Square, winner: Player): boolean {
-    return !square.value && !winner;
+  getEnableSquares(squares: Square[]): Square[] {
+    return squares.filter(square => !square.value);
+  }
+
+  chooseSquare(squares: Square[]): Square {
+    let max: number = squares.length - 1;
+    let randomNumber: number = Math.floor(Math.random() * max);
+    return squares[randomNumber];
+  }
+
+  squareClick(square: Square): void {
+    if (this.isPossibleToPlayForHuman(square, this.winner, this.currentPlayer)) {
+      this.makeMove(square);
+    }
+  }
+
+  isPossibleToPlayForHuman(square: Square, winner: Player, currentPlayer: Player): boolean {
+    return !square.value && !winner && currentPlayer.isHuman;
+  }
+
+  isPossibleToPlayForArtificialIntelligence(winner: Player, currentPlayer: Player, isDrawMatch: boolean): boolean {
+    return currentPlayer && !currentPlayer.isHuman && !winner && !isDrawMatch;
+  }
+
+  makeMove(square: Square): void {
+    square = this.updateSquareValue(square, this.currentPlayer);
+    this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
+    this.isDrawMatch = this.determineIsDrawMatch(this.squares, this.winner);
+    this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
   }
 
   updateSquareValue(square: Square, currentPlayer: Player): Square {
@@ -78,6 +109,15 @@ export class TicTacToeComponent implements OnInit {
       }
     }
     return null;
+  }
+
+  determineIsDrawMatch(squares: Square[], winner: Player): boolean {
+    if (!winner && this.getEnableSquares(squares).length == 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   updateCurrentPlayer(currentPlayer: Player, players: Player[]): Player {
