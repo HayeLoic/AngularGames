@@ -29,7 +29,7 @@ export class ArtificialIntelligenceBrainService {
   }
 
   getRandomSquareId(squares: Square[]): number {
-    let max: number = squares.length - 1;
+    let max: number = squares.length;
     return Math.floor(Math.random() * max);
   }
 
