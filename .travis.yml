@@ -21,3 +21,7 @@ install:
  
 script:
   - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessCI
+  
+notifications:
+  email:
+    - haye.loic@gmail.com
