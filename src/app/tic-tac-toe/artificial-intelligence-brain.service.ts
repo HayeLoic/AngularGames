@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Square } from './square';
 import { Player } from './player';
-import { DifficultyLevel } from './difficulty-level';
+import { DifficultyLevel } from '../difficulty/difficulty-level';
 
 @Injectable({
   providedIn: 'root'
@@ -45,9 +45,9 @@ export class ArtificialIntelligenceBrainService {
         && squares[winningCombination[2] - 1].value == player.symbol) {
         return winningCombination[1] - 1;
       }
-      if (squares[winningCombination[0] - 1].value == player.symbol
+      if (!squares[winningCombination[0] - 1].value
         && squares[winningCombination[1] - 1].value == player.symbol
-        && !squares[winningCombination[2] - 1].value) {
+        && squares[winningCombination[2] - 1].value == player.symbol) {
         return winningCombination[0] - 1;
       }
     }

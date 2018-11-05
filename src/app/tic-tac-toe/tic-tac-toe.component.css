@@ -18,3 +18,7 @@
 .start-new-game-container {
     margin-top: 10px;
 }
+
+.select-difficulty {
+    width: 200px;
+}
