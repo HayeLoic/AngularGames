@@ -209,4 +209,42 @@ describe('ArtificialIntelligenceBrainService', () => {
     let currentPlayer: Player = players[0];
     expect(service.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players)).toBe(undefined);
   }));
+
+  it('getOpponentWinningSquareIndex should return [8]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, 'X'));
+    squares.push(new Square(2, 'X'));
+    squares.push(new Square(3, ''));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, 'V'));
+    squares.push(new Square(8, 'V'));
+    squares.push(new Square(9, ''));
+    let players: Player[] = [];
+    players.push(new Player(1, 'X', true, DifficultyLevel.None));
+    players.push(new Player(2, 'O', true, DifficultyLevel.None));
+    players.push(new Player(3, 'V', true, DifficultyLevel.None));
+    let currentPlayer: Player = players[0];
+    expect(service.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players)).toBe(8);
+  }));
+
+  it('getOpponentWinningSquareIndex should return [5]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, 'X'));
+    squares.push(new Square(2, 'X'));
+    squares.push(new Square(3, ''));
+    squares.push(new Square(4, 'O'));
+    squares.push(new Square(5, 'O'));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, 'V'));
+    squares.push(new Square(8, 'V'));
+    squares.push(new Square(9, ''));
+    let players: Player[] = [];
+    players.push(new Player(1, 'X', true, DifficultyLevel.None));
+    players.push(new Player(2, 'O', true, DifficultyLevel.None));
+    players.push(new Player(3, 'V', true, DifficultyLevel.None));
+    let currentPlayer: Player = players[0];
+    expect(service.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players)).toBe(5);
+  }));
 });

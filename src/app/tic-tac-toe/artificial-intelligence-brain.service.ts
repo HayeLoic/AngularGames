@@ -88,7 +88,7 @@ export class ArtificialIntelligenceBrainService {
   getOpponentWinningSquareIndex(squares: Square[], winningCombinations: Array<[number, number, number]>, currentPlayer: Player, players: Player[]): number {
     let opponentWinningSquareIndex: number;
     players.forEach((player) => {
-      if (player != currentPlayer) {
+      if (opponentWinningSquareIndex == null && player != currentPlayer) {
         opponentWinningSquareIndex = this.getWinningSquareIndex(squares, winningCombinations, player);
       }
       if (opponentWinningSquareIndex != null) {
