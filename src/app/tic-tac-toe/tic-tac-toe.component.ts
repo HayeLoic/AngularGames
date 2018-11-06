@@ -59,7 +59,7 @@ export class TicTacToeComponent implements OnInit {
   }
 
   getDefaultDifficultyId(selectedDifficultyId: number, difficulties: Difficulty[]): number {
-    if (selectedDifficultyId) {
+    if (selectedDifficultyId != null) {
       return selectedDifficultyId;
     }
     else {
