@@ -11,29 +11,29 @@ export class ArtificialIntelligenceBrainService {
   constructor() { }
 
   chooseSquare(squares: Square[], enableSquares: Square[], difficultyLevel: DifficultyLevel, winningCombinations: Array<[number, number, number]>, currentPlayer: Player): Square {
-    let squareIdToPlay: number;
+    let squareIndexToPlay: number;
     if (difficultyLevel == DifficultyLevel.Easy) {
-      squareIdToPlay = this.getRandomSquareId(enableSquares);
-      return enableSquares[squareIdToPlay];
+      squareIndexToPlay = this.getRandomSquareIndex(enableSquares);
+      return enableSquares[squareIndexToPlay];
     }
     else {
-      squareIdToPlay = this.getWinningSquareId(squares, winningCombinations, currentPlayer);
-      if (squareIdToPlay) {
-        return squares[squareIdToPlay];
+      squareIndexToPlay = this.getWinningSquareIndex(squares, winningCombinations, currentPlayer);
+      if (squareIndexToPlay) {
+        return squares[squareIndexToPlay];
       }
       else {
-        squareIdToPlay = this.getRandomSquareId(enableSquares);
-        return enableSquares[squareIdToPlay];
+        squareIndexToPlay = this.getRandomSquareIndex(enableSquares);
+        return enableSquares[squareIndexToPlay];
       }
     }
   }
 
-  getRandomSquareId(squares: Square[]): number {
+  getRandomSquareIndex(squares: Square[]): number {
     let max: number = squares.length;
     return Math.floor(Math.random() * max);
   }
 
-  getWinningSquareId(squares: Square[], winningCombinations: Array<[number, number, number]>, player: Player): number {
+  getWinningSquareIndex(squares: Square[], winningCombinations: Array<[number, number, number]>, player: Player): number {
     for (let winningCombination of winningCombinations) {
       if (squares[winningCombination[0] - 1].value == player.symbol
         && squares[winningCombination[1] - 1].value == player.symbol
