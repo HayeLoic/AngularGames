@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Square } from './square';
 import { Player } from './player';
+import { DifficultyLevel } from '../difficulty/difficulty-level';
+import { ArtificialIntelligenceBrainService } from './artificial-intelligence-brain.service';
+import { Difficulty } from '../difficulty/difficulty';
+import { DifficultyService } from '../difficulty/difficulty.service';
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -25,20 +29,42 @@ export class TicTacToeComponent implements OnInit {
     [3, 5, 7]
   ];
   tryToMoveIntervalInMilliseconds: number = 2000;
+  difficulties: Difficulty[] = [];
+  selectedDifficulty: Difficulty;
+  selectedDifficultyId: number;
 
-  constructor() { }
+  constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
 
   ngOnInit() {
+    this.difficulties = this.difficultyService.getDifficulties();
     this.startNewGame();
   }
 
   startNewGame() {
+    this.selectedDifficultyId = this.getDefaultDifficultyId(this.selectedDifficultyId, this.difficulties);
+    this.selectedDifficulty = this.difficulties[this.selectedDifficultyId];
     this.squares = this.initializeSquares(this.maxSquareCount);
-    this.players = this.initializePlayers();
+    this.players = this.initializePlayers(this.selectedDifficulty);
     this.currentPlayer = this.players[0];
     this.winner = null;
     this.isDrawMatch = false;
-    setInterval(() => this.artificialIntelligenceTryToMove(this.currentPlayer, this.winner, this.isDrawMatch, this.squares), this.tryToMoveIntervalInMilliseconds);
+    setInterval(
+      () => this.artificialIntelligenceTryToMove(
+        this.currentPlayer,
+        this.winner,
+        this.isDrawMatch,
+        this.squares,
+        this.winningCombinations),
+      this.tryToMoveIntervalInMilliseconds);
+  }
+
+  getDefaultDifficultyId(selectedDifficultyId: number, difficulties: Difficulty[]): number {
+    if (selectedDifficultyId != null) {
+      return selectedDifficultyId;
+    }
+    else {
+      return difficulties.length - 1;
+    }
   }
 
   initializeSquares(maxSquareCount: number): Square[] {
@@ -49,29 +75,23 @@ export class TicTacToeComponent implements OnInit {
     return squares;
   }
 
-  initializePlayers(): Player[] {
+  initializePlayers(difficulty: Difficulty): Player[] {
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true));
-    players.push(new Player(2, 'O', false));
+    players.push(new Player(1, 'X', true, DifficultyLevel.None));
+    players.push(new Player(2, 'O', false, difficulty.difficultyLevel));
     return players;
   }
 
-  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[]) {
+  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[], winningCombinations: Array<[number, number, number]>) {
     if (this.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)) {
       let enableSquares: Square[] = this.getEnableSquares(squares);
-      let squareToPlay = this.chooseSquare(enableSquares);
+      let squareToPlay = this.artificialIntelligenceBrainService.chooseSquare(squares, enableSquares, currentPlayer.difficultyLevel, winningCombinations, currentPlayer);
       this.makeMove(squareToPlay);
     }
   }
 
   getEnableSquares(squares: Square[]): Square[] {
     return squares.filter(square => !square.value);
-  }
-
-  chooseSquare(squares: Square[]): Square {
-    let max: number = squares.length - 1;
-    let randomNumber: number = Math.floor(Math.random() * max);
-    return squares[randomNumber];
   }
 
   squareClick(square: Square): void {
@@ -127,14 +147,5 @@ export class TicTacToeComponent implements OnInit {
     else {
       return players[0];
     }
-  }
-
-  isFirstMoveDone(): boolean {
-    for (let square of this.squares) {
-      if (square.value) {
-        return true;
-      }
-    }
-    return false;
   }
 }
