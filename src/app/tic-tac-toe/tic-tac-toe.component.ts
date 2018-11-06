@@ -54,7 +54,8 @@ export class TicTacToeComponent implements OnInit {
         this.winner,
         this.isDrawMatch,
         this.squares,
-        this.winningCombinations),
+        this.winningCombinations,
+        this.players),
       this.tryToMoveIntervalInMilliseconds);
   }
 
@@ -82,10 +83,10 @@ export class TicTacToeComponent implements OnInit {
     return players;
   }
 
-  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[], winningCombinations: Array<[number, number, number]>) {
+  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[], winningCombinations: Array<[number, number, number]>, players: Player[]) {
     if (this.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)) {
       let enableSquares: Square[] = this.getEnableSquares(squares);
-      let squareToPlay = this.artificialIntelligenceBrainService.chooseSquare(squares, enableSquares, currentPlayer.difficultyLevel, winningCombinations, currentPlayer);
+      let squareToPlay = this.artificialIntelligenceBrainService.chooseSquare(squares, enableSquares, currentPlayer.difficultyLevel, winningCombinations, currentPlayer, players);
       this.makeMove(squareToPlay);
     }
   }
