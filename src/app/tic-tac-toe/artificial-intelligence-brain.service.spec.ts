@@ -358,4 +358,28 @@ describe('ArtificialIntelligenceBrainService', () => {
     let currentPlayer: Player = players[0];
     expect(service.getSquareToPlayInHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players).id).toBe(7);
   }));
+
+  it('isCornerSquare should return [true]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let square: Square = new Square(1, '');
+    expect(service.isCornerSquare(square)).toBe(true);
+  }));
+
+  it('isCornerSquare should return [false]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let square: Square = new Square(2, '');
+    expect(service.isCornerSquare(square)).toBe(false);
+  }));
+
+  it('getBestSquareIndexToPlay should return [4]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, 'O'));
+    squares.push(new Square(2, ''));
+    squares.push(new Square(3, ''));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, ''));
+    expect(service.getBestSquareIndexToPlay(squares)).toBe(4);
+  }));
 });

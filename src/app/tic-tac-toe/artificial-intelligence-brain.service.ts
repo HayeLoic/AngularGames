@@ -21,8 +21,12 @@ export class ArtificialIntelligenceBrainService {
         squareToPlay = this.getSquareToPlayInMediumDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer);
         break;
       }
-      default: {
+      case DifficultyLevel.Hard: {
         squareToPlay = this.getSquareToPlayInHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players);
+        break;
+      }
+      default: {
+        squareToPlay = this.getSquareToPlayInVeryHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players);
         break;
       }
     }
@@ -51,6 +55,25 @@ export class ArtificialIntelligenceBrainService {
       return squares[squareIndexToPlay];
     }
     squareIndexToPlay = this.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players);
+    if (squareIndexToPlay != null) {
+      return squares[squareIndexToPlay];
+    }
+    else {
+      squareIndexToPlay = this.getRandomSquareIndex(enableSquares);
+      return enableSquares[squareIndexToPlay];
+    }
+  }
+
+  getSquareToPlayInVeryHardDifficultyLevel(squares: Square[], enableSquares: Square[], winningCombinations: Array<[number, number, number]>, currentPlayer: Player, players: Player[]): Square {
+    let squareIndexToPlay: number = this.getWinningSquareIndex(squares, winningCombinations, currentPlayer);
+    if (squareIndexToPlay != null) {
+      return squares[squareIndexToPlay];
+    }
+    squareIndexToPlay = this.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players);
+    if (squareIndexToPlay != null) {
+      return squares[squareIndexToPlay];
+    }
+    squareIndexToPlay = this.getBestSquareIndexToPlay(squares);
     if (squareIndexToPlay != null) {
       return squares[squareIndexToPlay];
     }
@@ -96,5 +119,23 @@ export class ArtificialIntelligenceBrainService {
       }
     });
     return opponentWinningSquareIndex;
+  }
+
+  isCornerSquare(square: Square): boolean {
+    let cornerSquareIds: number[] = [1, 3, 7, 9];
+    return cornerSquareIds.includes(square.id);
+  }
+
+  getCenterSquareIndex(): number {
+    return 4;
+  }
+
+  getBestSquareIndexToPlay(squares: Square[]): number {
+    let bestSquareIndex: number;
+    let playedSquares: Square[] = squares.filter(square => square.value != "");
+    if (playedSquares.length === 1 && this.isCornerSquare(playedSquares[0])) {
+      return this.getCenterSquareIndex();
+    }
+    return bestSquareIndex;
   }
 }

@@ -14,6 +14,7 @@ export class DifficultyService {
     difficulties.push(new Difficulty(0, 'Facile', DifficultyLevel.Easy));
     difficulties.push(new Difficulty(1, 'Moyen', DifficultyLevel.Medium));
     difficulties.push(new Difficulty(2, 'Difficile', DifficultyLevel.Hard));
+    difficulties.push(new Difficulty(3, 'Très difficile', DifficultyLevel.VeryHard));
     return difficulties;
   }
 }
