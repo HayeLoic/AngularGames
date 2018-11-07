@@ -1,4 +1,4 @@
-import { async, TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
 import { ArtificialIntelligenceBrainService } from './artificial-intelligence-brain.service';
 import { Square } from './square';
@@ -246,5 +246,116 @@ describe('ArtificialIntelligenceBrainService', () => {
     players.push(new Player(3, 'V', true, DifficultyLevel.None));
     let currentPlayer: Player = players[0];
     expect(service.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players)).toBe(5);
+  }));
+
+  it('getSquareToPlayInEasyDifficultyLevel should return each possible square [9]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, ''));
+    squares.push(new Square(2, ''));
+    squares.push(new Square(3, ''));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, ''));
+    let results: Square[] = [];
+    let distinctResults: Square[] = [];
+
+    for (let index = 0; index < 1000; index++) {
+      results.push(service.getSquareToPlayInEasyDifficultyLevel(squares));
+    }
+    for (let index = 0; index < results.length; index++) {
+      if (!distinctResults.includes(results[index])) {
+        distinctResults.push(results[index]);
+      }
+    }
+    expect(distinctResults.length).toBe(9);
+  }));
+
+  it('getSquareToPlayInMediumDifficultyLevel should return Square with id = [1]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, ''));
+    squares.push(new Square(2, 'X'));
+    squares.push(new Square(3, 'X'));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, ''));
+    let enableSquares: Square[] = squares.filter(square => !square.value);
+    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    expect(service.getSquareToPlayInMediumDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer).id).toBe(1);
+  }));
+
+  it('getSquareToPlayInMediumDifficultyLevel should return Square with id = [5]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, 'X'));
+    squares.push(new Square(2, ''));
+    squares.push(new Square(3, ''));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, 'X'));
+    let enableSquares: Square[] = squares.filter(square => !square.value);
+    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    expect(service.getSquareToPlayInMediumDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer).id).toBe(5);
+  }));
+
+  it('getSquareToPlayInMediumDifficultyLevel should return Square with id = [9]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, ''));
+    squares.push(new Square(2, ''));
+    squares.push(new Square(3, 'X'));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, 'X'));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, ''));
+    let enableSquares: Square[] = squares.filter(square => !square.value);
+    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    expect(service.getSquareToPlayInMediumDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer).id).toBe(9);
+  }));
+
+  it('getSquareToPlayInHardDifficultyLevel should return Square with id = [1]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, ''));
+    squares.push(new Square(2, 'O'));
+    squares.push(new Square(3, 'O'));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, ''));
+    let enableSquares: Square[] = squares.filter(square => !square.value);
+    let players: Player[] = [];
+    players.push(new Player(1, 'X', true, DifficultyLevel.None));
+    players.push(new Player(2, 'O', true, DifficultyLevel.None));
+    let currentPlayer: Player = players[0];
+    expect(service.getSquareToPlayInHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players).id).toBe(1);
+  }));
+
+  it('getSquareToPlayInHardDifficultyLevel should return Square with id = [7]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, ''));
+    squares.push(new Square(2, 'O'));
+    squares.push(new Square(3, 'O'));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, 'X'));
+    squares.push(new Square(9, 'X'));
+    let enableSquares: Square[] = squares.filter(square => !square.value);
+    let players: Player[] = [];
+    players.push(new Player(1, 'X', true, DifficultyLevel.None));
+    players.push(new Player(2, 'O', true, DifficultyLevel.None));
+    let currentPlayer: Player = players[0];
+    expect(service.getSquareToPlayInHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players).id).toBe(7);
   }));
 });

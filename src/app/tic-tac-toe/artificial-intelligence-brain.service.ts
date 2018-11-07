@@ -36,7 +36,7 @@ export class ArtificialIntelligenceBrainService {
 
   getSquareToPlayInMediumDifficultyLevel(squares: Square[], enableSquares: Square[], winningCombinations: Array<[number, number, number]>, currentPlayer: Player): Square {
     let squareIndexToPlay: number = this.getWinningSquareIndex(squares, winningCombinations, currentPlayer);
-    if (squareIndexToPlay) {
+    if (squareIndexToPlay != null) {
       return squares[squareIndexToPlay];
     }
     else {
@@ -47,11 +47,11 @@ export class ArtificialIntelligenceBrainService {
 
   getSquareToPlayInHardDifficultyLevel(squares: Square[], enableSquares: Square[], winningCombinations: Array<[number, number, number]>, currentPlayer: Player, players: Player[]): Square {
     let squareIndexToPlay: number = this.getWinningSquareIndex(squares, winningCombinations, currentPlayer);
-    if (squareIndexToPlay) {
+    if (squareIndexToPlay != null) {
       return squares[squareIndexToPlay];
     }
     squareIndexToPlay = this.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players);
-    if (squareIndexToPlay) {
+    if (squareIndexToPlay != null) {
       return squares[squareIndexToPlay];
     }
     else {
