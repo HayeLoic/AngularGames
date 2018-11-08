@@ -382,4 +382,60 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(9, ''));
     expect(service.getBestSquareIndexToPlay(squares)).toBe(4);
   }));
+
+  it('getEnableEdgeSquareIndex should return [undefined]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, ''));
+    squares.push(new Square(2, 'X'));
+    squares.push(new Square(3, ''));
+    squares.push(new Square(4, 'X'));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, 'X'));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, 'X'));
+    squares.push(new Square(9, ''));
+    expect(service.getEnableEdgeSquareIndex(squares)).toBe(undefined);
+  }));
+
+  it('getEnableEdgeSquareIndex should return [1]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, ''));
+    squares.push(new Square(2, ''));
+    squares.push(new Square(3, ''));
+    squares.push(new Square(4, 'X'));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, 'X'));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, 'X'));
+    squares.push(new Square(9, ''));
+    expect(service.getEnableEdgeSquareIndex(squares)).toBe(1);
+  }));
+
+  it('getEnableEdgeSquareIndex should return [7]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, ''));
+    squares.push(new Square(2, 'X'));
+    squares.push(new Square(3, ''));
+    squares.push(new Square(4, 'X'));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, 'X'));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, ''));
+    expect(service.getEnableEdgeSquareIndex(squares)).toBe(7);
+  }));
+
+  it('getBestSquareIndexToPlay should return [4]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let squares: Square[] = [];
+    squares.push(new Square(1, 'X'));
+    squares.push(new Square(2, ''));
+    squares.push(new Square(3, ''));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, ''));
+    expect(service.getBestSquareIndexToPlay(squares)).toBe(4);
+  }));
 });

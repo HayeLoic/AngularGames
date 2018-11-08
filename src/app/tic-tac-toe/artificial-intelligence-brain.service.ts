@@ -130,11 +130,26 @@ export class ArtificialIntelligenceBrainService {
     return 4;
   }
 
+  getEnableEdgeSquareIndex(squares: Square[]): number {
+    let enableEdgeSquareIndex: number;
+    let cornerSquareIds: number[] = [2, 4, 6, 8];
+    let enableSquares: Square[] = squares.filter(square => !square.value);
+    enableSquares.forEach((enableSquare) => {
+      if (cornerSquareIds.includes(enableSquare.id)) {
+        enableEdgeSquareIndex = squares.indexOf(enableSquare);
+      }
+    });
+    return enableEdgeSquareIndex;
+  }
+
   getBestSquareIndexToPlay(squares: Square[]): number {
     let bestSquareIndex: number;
     let playedSquares: Square[] = squares.filter(square => square.value != "");
     if (playedSquares.length === 1 && this.isCornerSquare(playedSquares[0])) {
       return this.getCenterSquareIndex();
+    }
+    if (playedSquares.length === 3) {
+      return this.getEnableEdgeSquareIndex(squares);
     }
     return bestSquareIndex;
   }
