@@ -73,7 +73,7 @@ export class ArtificialIntelligenceBrainService {
     if (squareIndexToPlay != null) {
       return squares[squareIndexToPlay];
     }
-    squareIndexToPlay = this.getBestSquareIndexToPlay(squares);
+    squareIndexToPlay = this.getBestSquareIndexToPlay(squares, currentPlayer);
     if (squareIndexToPlay != null) {
       return squares[squareIndexToPlay];
     }
@@ -126,27 +126,78 @@ export class ArtificialIntelligenceBrainService {
     return cornerSquareIds.includes(square.id);
   }
 
+  isEdgeSquare(square: Square): boolean {
+    let edgeSquareIds: number[] = [2, 4, 6, 8];
+    return edgeSquareIds.includes(square.id);
+  }
+
   getCenterSquareIndex(): number {
     return 4;
   }
 
-  getEnableEdgeSquareIndex(squares: Square[]): number {
-    let enableEdgeSquareIndex: number;
-    let cornerSquareIds: number[] = [2, 4, 6, 8];
+  getEnableCornerSquareIndex(squares: Square[]): number {
+    let enableCornerSquareIndex: number;
     let enableSquares: Square[] = squares.filter(square => !square.value);
     enableSquares.forEach((enableSquare) => {
-      if (cornerSquareIds.includes(enableSquare.id)) {
+      if (this.isCornerSquare(enableSquare)) {
+        enableCornerSquareIndex = squares.indexOf(enableSquare);
+      }
+    });
+    return enableCornerSquareIndex;
+  }
+
+  getEnableEdgeSquareIndex(squares: Square[]): number {
+    let enableEdgeSquareIndex: number;
+    let enableSquares: Square[] = squares.filter(square => !square.value);
+    enableSquares.forEach((enableSquare) => {
+      if (this.isEdgeSquare(enableSquare)) {
         enableEdgeSquareIndex = squares.indexOf(enableSquare);
       }
     });
     return enableEdgeSquareIndex;
   }
 
-  getBestSquareIndexToPlay(squares: Square[]): number {
+  hasOpponentPlayedCenterSquare(squares: Square[], currentPlayer: Player): boolean {
+    let centerSquare: Square = squares[this.getCenterSquareIndex()];
+    return centerSquare.value != "" && centerSquare.value != currentPlayer.symbol;
+  }
+
+  getOppositeSquareIndex(squares, squareIndex) {
+    return squares.length - squareIndex - 1;
+  }
+
+  getEnableCornerSquareIndexOppositeToThePreviousPlayedCornerSquare(squares: Square[]): number {
+    let previousSquareIndex: number;
+    let oppositeSquareIndex: number;
+    let nextSquareIndex: number;
+    for (let index = 0; index < squares.length; index++) {
+      let square: Square = squares[index];
+      if (square.value != "" && this.isCornerSquare(square)) {
+        previousSquareIndex = index;
+      }
+    }
+    oppositeSquareIndex = this.getOppositeSquareIndex(squares, previousSquareIndex);
+    if (squares[oppositeSquareIndex].value == "") {
+      nextSquareIndex = oppositeSquareIndex;
+    }
+    return nextSquareIndex;
+  }
+
+  getBestSquareIndexToPlay(squares: Square[], currentPlayer: Player): number {
     let bestSquareIndex: number;
     let playedSquares: Square[] = squares.filter(square => square.value != "");
-    if (playedSquares.length === 1 && this.isCornerSquare(playedSquares[0])) {
-      return this.getCenterSquareIndex();
+    if (playedSquares.length === 0) {
+      return this.getEnableCornerSquareIndex(squares);
+    }
+    if (playedSquares.length === 1) {
+      if (this.isCornerSquare(playedSquares[0]) || this.isEdgeSquare(playedSquares[0])) {
+        return this.getCenterSquareIndex();
+      }
+    }
+    if (playedSquares.length === 2) {
+      if (this.hasOpponentPlayedCenterSquare(squares, currentPlayer)) {
+        return this.getEnableCornerSquareIndexOppositeToThePreviousPlayedCornerSquare(squares);
+      }
     }
     if (playedSquares.length === 3) {
       return this.getEnableEdgeSquareIndex(squares);
