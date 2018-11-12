@@ -73,7 +73,7 @@ export class ArtificialIntelligenceBrainService {
     if (squareIndexToPlay != null) {
       return squares[squareIndexToPlay];
     }
-    squareIndexToPlay = this.getBestSquareIndexToPlay(squares, currentPlayer);
+    squareIndexToPlay = this.getBestSquareIndexToPlay(squares, currentPlayer, winningCombinations);
     if (squareIndexToPlay != null) {
       return squares[squareIndexToPlay];
     }
@@ -183,7 +183,93 @@ export class ArtificialIntelligenceBrainService {
     return nextSquareIndex;
   }
 
-  getBestSquareIndexToPlay(squares: Square[], currentPlayer: Player): number {
+  getEnableAndIsolatedCornerSquareIndex(squares: Square[]): number {
+    let enableAndIsolatedCornerSquareIndex: number;
+    let isolatedCornerSquareIndex: number;
+    for (let index = 0; index < squares.length; index++) {
+      let square: Square = squares[index];
+      if (this.isCornerSquare(square) && square.value != "") {
+        let squareIndex: number = squares.indexOf(square);
+        switch (squareIndex) {
+          case 0:
+            if (squares[1].value == "" && squares[2].value == "") {
+              isolatedCornerSquareIndex = 2;
+            }
+            else {
+              isolatedCornerSquareIndex = 6;
+            }
+            break;
+          case 2:
+            if (squares[0].value == "" && squares[1].value == "") {
+              isolatedCornerSquareIndex = 0;
+            }
+            else {
+              isolatedCornerSquareIndex = 8;
+            }
+            break;
+          case 6:
+            if (squares[7].value == "" && squares[8].value == "") {
+              isolatedCornerSquareIndex = 8;
+            }
+            else {
+              isolatedCornerSquareIndex = 0;
+            }
+            break;
+          case 8:
+            if (squares[6].value == "" && squares[7].value == "") {
+              isolatedCornerSquareIndex = 6;
+            }
+            else {
+              isolatedCornerSquareIndex = 2;
+            }
+            break;
+        }
+      }
+    }
+    if (squares[isolatedCornerSquareIndex].value == "") {
+      enableAndIsolatedCornerSquareIndex = isolatedCornerSquareIndex;
+    }
+    return enableAndIsolatedCornerSquareIndex;
+  }
+
+  getWinningPossibilitiesCount(squares: Square[], player: Player, winningCombinations: Array<[number, number, number]>): number {
+    let winningPossibilitiesCount: number = 0;
+    for (let winningCombination of winningCombinations) {
+      if (squares[winningCombination[0] - 1].value == player.symbol
+        && squares[winningCombination[1] - 1].value == player.symbol
+        && !squares[winningCombination[2] - 1].value) {
+        winningPossibilitiesCount++;
+      }
+      if (squares[winningCombination[0] - 1].value == player.symbol
+        && !squares[winningCombination[1] - 1].value
+        && squares[winningCombination[2] - 1].value == player.symbol) {
+        winningPossibilitiesCount++;
+      }
+      if (!squares[winningCombination[0] - 1].value
+        && squares[winningCombination[1] - 1].value == player.symbol
+        && squares[winningCombination[2] - 1].value == player.symbol) {
+        winningPossibilitiesCount++;
+      }
+    }
+    return winningPossibilitiesCount;
+  }
+
+  getEnableSquareIndexWithSeveralWinningPossibilities(readOnlySquares: Square[], currentPlayer: Player, winningCombinations: Array<[number, number, number]>): number {
+    let enableSquareIndexWithTwoWinningPossibilities: number;
+    for (let index = 0; index < readOnlySquares.length; index++) {
+      let squares: Square[] = readOnlySquares.map(square => Object.assign({}, square));
+      let square: Square = squares[index];
+      if (square.value == "") {
+        squares[index].value = currentPlayer.symbol;
+        if (this.getWinningPossibilitiesCount(squares, currentPlayer, winningCombinations) > 1) {
+          enableSquareIndexWithTwoWinningPossibilities = index;
+        }
+      }
+    }
+    return enableSquareIndexWithTwoWinningPossibilities;
+  }
+
+  getBestSquareIndexToPlay(squares: Square[], currentPlayer: Player, winningCombinations: Array<[number, number, number]>): number {
     let bestSquareIndex: number;
     let playedSquares: Square[] = squares.filter(square => square.value != "");
     if (playedSquares.length === 0) {
@@ -198,9 +284,15 @@ export class ArtificialIntelligenceBrainService {
       if (this.hasOpponentPlayedCenterSquare(squares, currentPlayer)) {
         return this.getEnableCornerSquareIndexOppositeToThePreviousPlayedCornerSquare(squares);
       }
+      else {
+        return this.getEnableAndIsolatedCornerSquareIndex(squares);
+      }
     }
     if (playedSquares.length === 3) {
       return this.getEnableEdgeSquareIndex(squares);
+    }
+    if (playedSquares.length === 4) {
+      return this.getEnableSquareIndexWithSeveralWinningPossibilities(squares, currentPlayer, winningCombinations);
     }
     return bestSquareIndex;
   }
