@@ -76,8 +76,8 @@ export class TicTacToeComponent implements OnInit {
 
   initializeDefaultPlayers(difficulty: Difficulty): Player[] {
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, DifficultyLevel.None, difficulty));
-    players.push(new Player(2, 'O', false, difficulty.difficultyLevel, difficulty));
+    players.push(new Player(1, 'X', true, difficulty));
+    players.push(new Player(2, 'O', false, difficulty));
     return players;
   }
 
@@ -89,7 +89,7 @@ export class TicTacToeComponent implements OnInit {
   artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[], winningCombinations: Array<[number, number, number]>, players: Player[]) {
     if (this.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)) {
       let enableSquares: Square[] = this.getEnableSquares(squares);
-      let squareToPlay = this.artificialIntelligenceBrainService.chooseSquare(squares, enableSquares, currentPlayer.difficultyLevel, winningCombinations, currentPlayer, players);
+      let squareToPlay = this.artificialIntelligenceBrainService.chooseSquare(squares, enableSquares, currentPlayer.difficulty.difficultyLevel, winningCombinations, currentPlayer, players);
       this.makeMove(squareToPlay);
     }
   }

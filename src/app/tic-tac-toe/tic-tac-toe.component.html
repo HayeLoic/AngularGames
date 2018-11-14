@@ -5,9 +5,6 @@
       <span *ngIf="player.isHuman">Joueur humain</span>
       <span *ngIf="!player.isHuman">Ordinateur en mode {{player.difficulty.id}} {{player.difficulty.name}}</span>
     </div>
-    <div *ngIf="selectedDifficulty">
-      Difficulté : {{selectedDifficulty.name}}
-    </div>
     <span *ngIf="currentPlayer && !winner && !isDrawMatch">
       Prochain joueur : {{currentPlayer.symbol}}
     </span>
