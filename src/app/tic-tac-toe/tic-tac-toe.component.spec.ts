@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 import { TicTacToeComponent } from './tic-tac-toe.component';
 import { Difficulty } from '../difficulty/difficulty';
@@ -20,11 +21,14 @@ describe('TicTacToeComponent', () => {
     [1, 5, 9],
     [3, 5, 7]
   ];
+  let difficultyNone :Difficulty= new Difficulty(0, 'Aucune', DifficultyLevel.None);
+  let difficultyMedium :Difficulty= new Difficulty(2, 'Moyen', DifficultyLevel.Medium);
+  let difficultyHard :Difficulty= new Difficulty(3, 'Difficile', DifficultyLevel.Hard);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TicTacToeComponent],
-      imports: [FormsModule]
+      imports: [FormsModule, UiSwitchModule]
     })
       .compileComponents();
   }));
@@ -39,46 +43,19 @@ describe('TicTacToeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('getDefaultDifficultyId should return [1] with selectedDifficultyId == null', async(() => {
-    let selectedDifficultyId: number;
+  it('getDefaultDifficulty should return [difficultyMedium]', async(() => {
     let difficulties: Difficulty[] = [];
     difficulties.push(new Difficulty(0, 'Facile', DifficultyLevel.Easy));
     difficulties.push(new Difficulty(1, 'Moyen', DifficultyLevel.Medium));
-    expect(component.getDefaultDifficultyId(selectedDifficultyId, difficulties)).toBe(1);
+    expect(component.getDefaultDifficulty(difficulties).difficultyLevel).toBe(difficultyMedium.difficultyLevel);
   }));
 
-  it('getDefaultDifficultyId should return [0]', async(() => {
-    let selectedDifficultyId: number = 0;
+  it('getDefaultDifficulty should return [difficultyHard]', async(() => {
     let difficulties: Difficulty[] = [];
-    difficulties.push(new Difficulty(0, 'Facile', DifficultyLevel.Easy));
-    difficulties.push(new Difficulty(1, 'Moyen', DifficultyLevel.Medium));
-    expect(component.getDefaultDifficultyId(selectedDifficultyId, difficulties)).toBe(0);
-  }));
-
-  it('getDefaultDifficultyId should return [1]', async(() => {
-    let selectedDifficultyId: number = 1;
-    let difficulties: Difficulty[] = [];
-    difficulties.push(new Difficulty(0, 'Facile', DifficultyLevel.Easy));
-    difficulties.push(new Difficulty(1, 'Moyen', DifficultyLevel.Medium));
-    expect(component.getDefaultDifficultyId(selectedDifficultyId, difficulties)).toBe(1);
-  }));
-
-  it('getDefaultDifficultyId should return [1]', async(() => {
-    let selectedDifficultyId: number = 1;
-    let difficulties: Difficulty[] = [];
-    difficulties.push(new Difficulty(0, 'Facile', DifficultyLevel.Easy));
-    difficulties.push(new Difficulty(1, 'Moyen', DifficultyLevel.Medium));
-    difficulties.push(new Difficulty(2, 'Difficile', DifficultyLevel.Hard));
-    expect(component.getDefaultDifficultyId(selectedDifficultyId, difficulties)).toBe(1);
-  }));
-
-  it('getDefaultDifficultyId should return [2] with selectedDifficultyId == null', async(() => {
-    let selectedDifficultyId: number;
-    let difficulties: Difficulty[] = [];
-    difficulties.push(new Difficulty(0, 'Facile', DifficultyLevel.Easy));
-    difficulties.push(new Difficulty(1, 'Moyen', DifficultyLevel.Medium));
-    difficulties.push(new Difficulty(2, 'Difficile', DifficultyLevel.Hard));
-    expect(component.getDefaultDifficultyId(selectedDifficultyId, difficulties)).toBe(2);
+    difficulties.push(new Difficulty(1, 'Facile', DifficultyLevel.Easy));
+    difficulties.push(new Difficulty(2, 'Moyen', DifficultyLevel.Medium));
+    difficulties.push(new Difficulty(3, 'Difficile', DifficultyLevel.Hard));
+    expect(component.getDefaultDifficulty(difficulties).difficultyLevel).toBe(difficultyHard.difficultyLevel);
   }));
 
   it('getEnableSquares should return [0] square', async(() => {
@@ -125,35 +102,35 @@ describe('TicTacToeComponent', () => {
   }));
 
   it('isPossibleToPlayForArtificialIntelligence should return [false]', async(() => {
-    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.Easy, difficultyNone);
     let winner: Player;
     let isDrawMatch: boolean;
     expect(component.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)).toBe(false);
   }));
 
   it('isPossibleToPlayForArtificialIntelligence should return [true]', async(() => {
-    let currentPlayer: Player = new Player(1, 'X', false, DifficultyLevel.Easy);
+    let currentPlayer: Player = new Player(1, 'X', false, DifficultyLevel.Easy, difficultyNone);
     let winner: Player;
     let isDrawMatch: boolean = false;
     expect(component.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)).toBe(true);
   }));
 
   it('isPossibleToPlayForArtificialIntelligence should return [false]', async(() => {
-    let currentPlayer: Player = new Player(1, 'X', false, DifficultyLevel.Easy);
+    let currentPlayer: Player = new Player(1, 'X', false, DifficultyLevel.Easy, difficultyNone);
     let winner: Player;
     let isDrawMatch: boolean = true;
     expect(component.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)).toBe(false);
   }));
 
   it('isPossibleToPlayForArtificialIntelligence should return [false]', async(() => {
-    let currentPlayer: Player = new Player(1, 'X', false, DifficultyLevel.Easy);
+    let currentPlayer: Player = new Player(1, 'X', false, DifficultyLevel.Easy, difficultyNone);
     let winner: Player = currentPlayer;
     let isDrawMatch: boolean = true;
     expect(component.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)).toBe(false);
   }));
 
   it('isPossibleToPlayForArtificialIntelligence should return [false]', async(() => {
-    let currentPlayer: Player = new Player(1, 'X', false, DifficultyLevel.Easy);
+    let currentPlayer: Player = new Player(1, 'X', false, DifficultyLevel.Easy, difficultyNone);
     let winner: Player = currentPlayer;
     let isDrawMatch: boolean = false;
     expect(component.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)).toBe(false);
@@ -162,21 +139,21 @@ describe('TicTacToeComponent', () => {
   it('isPossibleToPlayForHuman should return [true]', async(() => {
     let square: Square = new Square(1, '');
     let winner: Player;
-    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
     expect(component.isPossibleToPlayForHuman(square, winner, currentPlayer)).toBe(true);
   }));
 
   it('isPossibleToPlayForHuman should return [false]', async(() => {
     let square: Square = new Square(1, 'X');
     let winner: Player;
-    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
     expect(component.isPossibleToPlayForHuman(square, winner, currentPlayer)).toBe(false);
   }));
 
   it('isPossibleToPlayForHuman should return [false]', async(() => {
     let square: Square = new Square(1, '');
-    let winner: Player = new Player(2, 'O', true, DifficultyLevel.None);
-    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let winner: Player = new Player(2, 'O', true, DifficultyLevel.None, difficultyNone);
+    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
     expect(component.isPossibleToPlayForHuman(square, winner, currentPlayer)).toBe(false);
   }));
 
@@ -191,7 +168,7 @@ describe('TicTacToeComponent', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
-    let player: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let player: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
     expect(component.determineWinner(winningCombinations, squares, player)).toBe(null);
   }));
 
@@ -206,7 +183,7 @@ describe('TicTacToeComponent', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
-    let player: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let player: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
     let result = component.determineWinner(winningCombinations, squares, player);
     expect(result.id).toBe(1);
   }));
@@ -222,7 +199,7 @@ describe('TicTacToeComponent', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, ''));
     squares.push(new Square(9, 'X'));
-    let player: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let player: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
     let result = component.determineWinner(winningCombinations, squares, player);
     expect(result.id).toBe(1);
   }));
@@ -238,7 +215,7 @@ describe('TicTacToeComponent', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
-    let player: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let player: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
     let result = component.determineWinner(winningCombinations, squares, player);
     expect(result.id).toBe(1);
   }));
@@ -254,7 +231,7 @@ describe('TicTacToeComponent', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, ''));
     squares.push(new Square(9, 'X'));
-    let player: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let player: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
     let result = component.determineWinner(winningCombinations, squares, player);
     expect(result.id).toBe(1);
   }));
@@ -270,7 +247,7 @@ describe('TicTacToeComponent', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, ''));
     squares.push(new Square(9, 'X'));
-    let winner: Player = new Player(1, 'X', true, DifficultyLevel.None);
+    let winner: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
     expect(component.determineIsDrawMatch(squares, winner)).toBe(false);
   }));
 

@@ -14,6 +14,7 @@ import { DifficultyService } from '../difficulty/difficulty.service';
 export class TicTacToeComponent implements OnInit {
   squares: Square[] = [];
   players: Player[] = [];
+  nextGamePlayers: Player[] = [];
   maxSquareCount: number = 9;
   currentPlayer: Player;
   winner: Player;
@@ -30,21 +31,23 @@ export class TicTacToeComponent implements OnInit {
   ];
   tryToMoveIntervalInMilliseconds: number = 2000;
   difficulties: Difficulty[] = [];
-  selectedDifficulty: Difficulty;
-  selectedDifficultyId: number;
+  switchModel: any = {
+    checkedLabel: 'primary',
+    uncheckedLabel: 'secondary'
+  };
 
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
 
   ngOnInit() {
     this.difficulties = this.difficultyService.getDifficulties();
+    let defaultDifficulty: Difficulty = this.getDefaultDifficulty(this.difficulties);
+    this.nextGamePlayers = this.initializeDefaultPlayers(defaultDifficulty);
     this.startNewGame();
   }
 
   startNewGame() {
-    this.selectedDifficultyId = this.getDefaultDifficultyId(this.selectedDifficultyId, this.difficulties);
-    this.selectedDifficulty = this.difficulties[this.selectedDifficultyId];
     this.squares = this.initializeSquares(this.maxSquareCount);
-    this.players = this.initializePlayers(this.selectedDifficulty);
+    this.players = this.initializePlayers(this.nextGamePlayers);
     this.currentPlayer = this.players[0];
     this.winner = null;
     this.isDrawMatch = false;
@@ -59,13 +62,8 @@ export class TicTacToeComponent implements OnInit {
       this.tryToMoveIntervalInMilliseconds);
   }
 
-  getDefaultDifficultyId(selectedDifficultyId: number, difficulties: Difficulty[]): number {
-    if (selectedDifficultyId != null) {
-      return selectedDifficultyId;
-    }
-    else {
-      return difficulties.length - 1;
-    }
+  getDefaultDifficulty(difficulties: Difficulty[]): Difficulty {
+    return difficulties[difficulties.length - 1];
   }
 
   initializeSquares(maxSquareCount: number): Square[] {
@@ -76,10 +74,15 @@ export class TicTacToeComponent implements OnInit {
     return squares;
   }
 
-  initializePlayers(difficulty: Difficulty): Player[] {
+  initializeDefaultPlayers(difficulty: Difficulty): Player[] {
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, DifficultyLevel.None));
-    players.push(new Player(2, 'O', false, difficulty.difficultyLevel));
+    players.push(new Player(1, 'X', true, DifficultyLevel.None, difficulty));
+    players.push(new Player(2, 'O', false, difficulty.difficultyLevel, difficulty));
+    return players;
+  }
+
+  initializePlayers(nextGamePlayers: Player[]): Player[] {
+    let players: Player[] = nextGamePlayers.map(player => Object.assign({}, player));
     return players;
   }
 
