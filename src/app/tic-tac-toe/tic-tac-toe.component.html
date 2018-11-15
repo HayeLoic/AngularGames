@@ -3,7 +3,7 @@
     <div *ngFor="let player of players">
       <span>Joueur {{player.symbol}} : </span>
       <span *ngIf="player.isHuman">Joueur humain</span>
-      <span *ngIf="!player.isHuman">Ordinateur en mode {{player.difficulty.id}} {{player.difficulty.name}}</span>
+      <span *ngIf="!player.isHuman">Ordinateur en mode {{player.difficulty.name}}</span>
     </div>
     <span *ngIf="currentPlayer && !winner && !isDrawMatch">
       Prochain joueur : {{currentPlayer.symbol}}
@@ -44,12 +44,12 @@
         <div class="row">
           <div *ngFor="let nextGamePlayer of nextGamePlayers;let i = index;" class="col-6">
             <div class="is-human-switch-wrapper">
-              <ui-switch [(ngModel)]="nextGamePlayer.isHuman" checkedLabel="Humain" uncheckedLabel="Ordinateur" size="large"
-                defaultBgColor="#DADADA"></ui-switch>
+              <ui-switch [(ngModel)]="nextGamePlayer.isHuman" checkedLabel="{{switchModel.checkedLabel}}"
+                uncheckedLabel="{{switchModel.uncheckedLabel}}" size="{{switchModel.size}}" defaultBgColor="{{switchModel.defaultBgColor}}"></ui-switch>
             </div>
             <div [hidden]="nextGamePlayer.isHuman">
               <select class="form-control select-difficulty" [(ngModel)]="nextGamePlayer.difficulty">
-                <option [value]="difficulty" *ngFor="let difficulty of difficulties"> {{difficulty.name}}</option>
+                <option [ngValue]="difficulty" *ngFor="let difficulty of difficulties"> {{difficulty.name}}</option>
               </select>
             </div>
           </div>

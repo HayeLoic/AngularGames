@@ -32,8 +32,10 @@ export class TicTacToeComponent implements OnInit {
   tryToMoveIntervalInMilliseconds: number = 2000;
   difficulties: Difficulty[] = [];
   switchModel: any = {
-    checkedLabel: 'primary',
-    uncheckedLabel: 'secondary'
+    checkedLabel: "Humain",
+    uncheckedLabel: "Ordinateur",
+    defaultBgColor: "#DADADA",
+    size:"large"
   };
 
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
