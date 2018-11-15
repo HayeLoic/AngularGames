@@ -110,7 +110,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
-    let player: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
+    let player: Player = new Player(1, 'X', true, difficultyNone);
     expect(service.getWinningSquareIndex(squares, winningCombinations, player)).toBe(undefined);
   }));
 
@@ -125,7 +125,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
-    let player: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
+    let player: Player = new Player(1, 'X', true, difficultyNone);
     expect(service.getWinningSquareIndex(squares, winningCombinations, player)).toBe(2);
   }));
 
@@ -140,7 +140,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
-    let player: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
+    let player: Player = new Player(1, 'X', true, difficultyNone);
     expect(service.getWinningSquareIndex(squares, winningCombinations, player)).toBe(4);
   }));
 
@@ -155,7 +155,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(7, ''));
     squares.push(new Square(8, 'X'));
     squares.push(new Square(9, 'X'));
-    let player: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
+    let player: Player = new Player(1, 'X', true, difficultyNone);
     expect(service.getWinningSquareIndex(squares, winningCombinations, player)).toBe(6);
   }));
 
@@ -171,8 +171,8 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, DifficultyLevel.None, difficultyNone));
-    players.push(new Player(2, 'O', true, DifficultyLevel.None, difficultyNone));
+    players.push(new Player(1, 'X', true, difficultyNone));
+    players.push(new Player(2, 'O', true, difficultyNone));
     let currentPlayer: Player = players[0];
     expect(service.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players)).toBe(undefined);
   }));
@@ -189,8 +189,8 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, DifficultyLevel.None, difficultyNone));
-    players.push(new Player(2, 'O', true, DifficultyLevel.None, difficultyNone));
+    players.push(new Player(1, 'X', true, difficultyNone));
+    players.push(new Player(2, 'O', true, difficultyNone));
     let currentPlayer: Player = players[0];
     expect(service.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players)).toBe(2);
   }));
@@ -207,8 +207,8 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, DifficultyLevel.None,difficultyNone));
-    players.push(new Player(2, 'O', true, DifficultyLevel.None, difficultyNone));
+    players.push(new Player(1, 'X', true,difficultyNone));
+    players.push(new Player(2, 'O', true, difficultyNone));
     let currentPlayer: Player = players[0];
     expect(service.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players)).toBe(undefined);
   }));
@@ -225,9 +225,9 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(8, 'V'));
     squares.push(new Square(9, ''));
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, DifficultyLevel.None, difficultyNone));
-    players.push(new Player(2, 'O', true, DifficultyLevel.None, difficultyNone));
-    players.push(new Player(3, 'V', true, DifficultyLevel.None, difficultyNone));
+    players.push(new Player(1, 'X', true, difficultyNone));
+    players.push(new Player(2, 'O', true, difficultyNone));
+    players.push(new Player(3, 'V', true, difficultyNone));
     let currentPlayer: Player = players[0];
     expect(service.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players)).toBe(8);
   }));
@@ -244,9 +244,9 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(8, 'V'));
     squares.push(new Square(9, ''));
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, DifficultyLevel.None, difficultyNone));
-    players.push(new Player(2, 'O', true, DifficultyLevel.None, difficultyNone));
-    players.push(new Player(3, 'V', true, DifficultyLevel.None, difficultyNone));
+    players.push(new Player(1, 'X', true, difficultyNone));
+    players.push(new Player(2, 'O', true, difficultyNone));
+    players.push(new Player(3, 'V', true, difficultyNone));
     let currentPlayer: Player = players[0];
     expect(service.getOpponentWinningSquareIndex(squares, winningCombinations, currentPlayer, players)).toBe(5);
   }));
@@ -288,7 +288,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
     let enableSquares: Square[] = squares.filter(square => !square.value);
-    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
+    let currentPlayer: Player = new Player(1, 'X', true, difficultyNone);
     expect(service.getSquareToPlayInMediumDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer).id).toBe(1);
   }));
 
@@ -304,7 +304,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(8, ''));
     squares.push(new Square(9, 'X'));
     let enableSquares: Square[] = squares.filter(square => !square.value);
-    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
+    let currentPlayer: Player = new Player(1, 'X', true, difficultyNone);
     expect(service.getSquareToPlayInMediumDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer).id).toBe(5);
   }));
 
@@ -320,7 +320,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(8, ''));
     squares.push(new Square(9, ''));
     let enableSquares: Square[] = squares.filter(square => !square.value);
-    let currentPlayer: Player = new Player(1, 'X', true, DifficultyLevel.None, difficultyNone);
+    let currentPlayer: Player = new Player(1, 'X', true, difficultyNone);
     expect(service.getSquareToPlayInMediumDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer).id).toBe(9);
   }));
 
@@ -337,8 +337,8 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(9, ''));
     let enableSquares: Square[] = squares.filter(square => !square.value);
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, DifficultyLevel.None, difficultyNone));
-    players.push(new Player(2, 'O', true, DifficultyLevel.None, difficultyNone));
+    players.push(new Player(1, 'X', true, difficultyNone));
+    players.push(new Player(2, 'O', true, difficultyNone));
     let currentPlayer: Player = players[0];
     expect(service.getSquareToPlayInHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players).id).toBe(1);
   }));
@@ -356,8 +356,8 @@ describe('ArtificialIntelligenceBrainService', () => {
     squares.push(new Square(9, 'X'));
     let enableSquares: Square[] = squares.filter(square => !square.value);
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, DifficultyLevel.None, difficultyNone));
-    players.push(new Player(2, 'O', true, DifficultyLevel.None, difficultyNone));
+    players.push(new Player(1, 'X', true, difficultyNone));
+    players.push(new Player(2, 'O', true, difficultyNone));
     let currentPlayer: Player = players[0];
     expect(service.getSquareToPlayInHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players).id).toBe(7);
   }));
