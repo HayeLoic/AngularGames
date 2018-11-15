@@ -160,15 +160,18 @@ export class TicTacToeComponent implements OnInit {
     }
   }
 
-  drawVictoriousLine(winningCombination: [number, number, number]): void {
-    
+  drawVictoriousLine(winningCombination: [number, number, number], squares: Square[]): void {
+    for (let index = 0; index < winningCombination.length; index++) {
+      let winningCombinationValue = winningCombination[index];
+      squares[winningCombinationValue - 1].isWinningSquare = true;
+    }
   }
 
   displayVictoryLine(winningCombinations: Array<[number, number, number]>, squares: Square[], winner: Player): void {
     if (winner) {
       for (let winningCombination of winningCombinations) {
         if (this.isVictoriousCombination(winningCombination, squares, winner)) {
-          this.drawVictoriousLine(winningCombination);
+          this.drawVictoriousLine(winningCombination, squares);
         }
       }
     }
