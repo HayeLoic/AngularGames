@@ -1,7 +1,9 @@
 <div>
   <div class="informations-container">
-    <div *ngIf="selectedDifficulty">
-      Difficulté : {{selectedDifficulty.name}}
+    <div *ngFor="let player of players">
+      <span>Joueur {{player.symbol}} : </span>
+      <span *ngIf="player.isHuman">Joueur humain</span>
+      <span *ngIf="!player.isHuman">Ordinateur en mode {{player.difficulty.name}}</span>
     </div>
     <span *ngIf="currentPlayer && !winner && !isDrawMatch">
       Prochain joueur : {{currentPlayer.symbol}}
@@ -39,11 +41,18 @@
       <div class="modal-body">
         <p>Voulez-vous commencer une nouvelle partie ?</p>
         <p>La partie en cours sera perdue.</p>
-        <div class="form-group">
-          <label for="selectDifficulty">Difficulté</label>
-          <select class="form-control select-difficulty" id="selectDifficulty" [(ngModel)]="selectedDifficultyId">
-            <option [value]="difficulty.id" *ngFor="let difficulty of difficulties"> {{difficulty.name}}</option>
-          </select>
+        <div class="row">
+          <div *ngFor="let nextGamePlayer of nextGamePlayers;let i = index;" class="col-6">
+            <div class="is-human-switch-wrapper">
+              <ui-switch [(ngModel)]="nextGamePlayer.isHuman" checkedLabel="{{switchModel.checkedLabel}}"
+                uncheckedLabel="{{switchModel.uncheckedLabel}}" size="{{switchModel.size}}" defaultBgColor="{{switchModel.defaultBgColor}}"></ui-switch>
+            </div>
+            <div [hidden]="nextGamePlayer.isHuman">
+              <select class="form-control select-difficulty" [(ngModel)]="nextGamePlayer.difficulty">
+                <option [ngValue]="difficulty" *ngFor="let difficulty of difficulties"> {{difficulty.name}}</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
