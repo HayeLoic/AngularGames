@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Square } from './square';
 import { Player } from './player';
-import { DifficultyLevel } from '../difficulty/difficulty-level';
 import { ArtificialIntelligenceBrainService } from './artificial-intelligence-brain.service';
 import { Difficulty } from '../difficulty/difficulty';
 import { DifficultyService } from '../difficulty/difficulty.service';
+import { Move } from './move';
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -37,6 +37,7 @@ export class TicTacToeComponent implements OnInit {
     defaultBgColor: "#DADADA",
     size: "large"
   };
+  currentGameMoves: Move[] = [];
 
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
 
@@ -118,8 +119,16 @@ export class TicTacToeComponent implements OnInit {
     square = this.updateSquareValue(square, this.currentPlayer);
     this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
     this.isDrawMatch = this.determineIsDrawMatch(this.squares, this.winner);
+    this.currentGameMoves = this.memorizeMove(this.currentGameMoves, this.currentPlayer, square, this.winner);
     this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
     this.displayVictoryLine(this.winningCombinations, this.squares, this.winner);
+  }
+
+  memorizeMove(moves: Move[], player: Player, square: Square, winner: Player): Move[] {
+    let isWinningMove: boolean = (winner != null);
+    let move: Move = new Move(player.symbol, square.id, isWinningMove);
+    moves.push(move);
+    return moves;
   }
 
   updateSquareValue(square: Square, currentPlayer: Player): Square {

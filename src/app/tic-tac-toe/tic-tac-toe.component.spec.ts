@@ -7,6 +7,7 @@ import { Difficulty } from '../difficulty/difficulty';
 import { DifficultyLevel } from '../difficulty/difficulty-level';
 import { Square } from './square';
 import { Player } from './player';
+import { Move } from './move';
 
 describe('TicTacToeComponent', () => {
   let component: TicTacToeComponent;
@@ -311,5 +312,13 @@ describe('TicTacToeComponent', () => {
     squares.push(new Square(9, 'O'));
     let winner: Player;
     expect(component.determineIsDrawMatch(squares, winner)).toBe(true);
+  }));
+
+  it('memorizeMove should increase moves array length to [1]', async(() => {
+    let moves: Move[] = [];
+    let player: Player = new Player(1, 'X', true, difficultyNone);
+    let square: Square = new Square(1, 'X');
+    moves = component.memorizeMove(moves, player, square, null);
+    expect(moves.length).toBe(1);
   }));
 });

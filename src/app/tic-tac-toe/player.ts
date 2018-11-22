@@ -4,7 +4,7 @@ export class Player {
     id: number;
     symbol: string;
     isHuman: boolean;
-    difficulty: Difficulty
+    difficulty: Difficulty;
 
     constructor(id: number, value: string, isHuman: boolean, difficulty: Difficulty) {
         this.id = id;
