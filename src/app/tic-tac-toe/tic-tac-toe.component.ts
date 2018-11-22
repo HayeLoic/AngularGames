@@ -35,7 +35,7 @@ export class TicTacToeComponent implements OnInit {
     checkedLabel: "Humain",
     uncheckedLabel: "Ordinateur",
     defaultBgColor: "#DADADA",
-    size:"large"
+    size: "large"
   };
 
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
@@ -119,6 +119,7 @@ export class TicTacToeComponent implements OnInit {
     this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
     this.isDrawMatch = this.determineIsDrawMatch(this.squares, this.winner);
     this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
+    this.displayVictoryLine(this.winningCombinations, this.squares, this.winner);
   }
 
   updateSquareValue(square: Square, currentPlayer: Player): Square {
@@ -126,11 +127,15 @@ export class TicTacToeComponent implements OnInit {
     return square;
   }
 
+  isVictoriousCombination(winningCombination: [number, number, number], squares: Square[], player: Player): boolean {
+    return squares[winningCombination[0] - 1].value == player.symbol
+      && squares[winningCombination[1] - 1].value == player.symbol
+      && squares[winningCombination[2] - 1].value == player.symbol
+  }
+
   determineWinner(winningCombinations: Array<[number, number, number]>, squares: Square[], player: Player): Player {
     for (let winningCombination of winningCombinations) {
-      if (squares[winningCombination[0] - 1].value == player.symbol
-        && squares[winningCombination[1] - 1].value == player.symbol
-        && squares[winningCombination[2] - 1].value == player.symbol) {
+      if (this.isVictoriousCombination(winningCombination, squares, player)) {
         return player;
       }
     }
@@ -152,6 +157,23 @@ export class TicTacToeComponent implements OnInit {
     }
     else {
       return players[0];
+    }
+  }
+
+  drawVictoriousLine(winningCombination: [number, number, number], squares: Square[]): void {
+    for (let index = 0; index < winningCombination.length; index++) {
+      let winningCombinationValue = winningCombination[index];
+      squares[winningCombinationValue - 1].isWinningSquare = true;
+    }
+  }
+
+  displayVictoryLine(winningCombinations: Array<[number, number, number]>, squares: Square[], winner: Player): void {
+    if (winner) {
+      for (let winningCombination of winningCombinations) {
+        if (this.isVictoriousCombination(winningCombination, squares, winner)) {
+          this.drawVictoriousLine(winningCombination, squares);
+        }
+      }
     }
   }
 }

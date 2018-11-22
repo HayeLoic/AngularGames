@@ -21,9 +21,9 @@ describe('TicTacToeComponent', () => {
     [1, 5, 9],
     [3, 5, 7]
   ];
-  let difficultyNone :Difficulty= new Difficulty(0, 'Aucune', DifficultyLevel.None);
-  let difficultyMedium :Difficulty= new Difficulty(2, 'Moyen', DifficultyLevel.Medium);
-  let difficultyHard :Difficulty= new Difficulty(3, 'Difficile', DifficultyLevel.Hard);
+  let difficultyNone: Difficulty = new Difficulty(0, 'Aucune', DifficultyLevel.None);
+  let difficultyMedium: Difficulty = new Difficulty(2, 'Moyen', DifficultyLevel.Medium);
+  let difficultyHard: Difficulty = new Difficulty(3, 'Difficile', DifficultyLevel.Hard);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -155,6 +155,38 @@ describe('TicTacToeComponent', () => {
     let winner: Player = new Player(2, 'O', true, difficultyNone);
     let currentPlayer: Player = new Player(1, 'X', true, difficultyNone);
     expect(component.isPossibleToPlayForHuman(square, winner, currentPlayer)).toBe(false);
+  }));
+
+  it('isVictoriousCombination should return [true]', async(() => {
+    let winningCombination: [number, number, number] = [1, 2, 3];
+    let squares: Square[] = [];
+    squares.push(new Square(1, 'X'));
+    squares.push(new Square(2, 'X'));
+    squares.push(new Square(3, 'X'));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, ''));
+    let player: Player = new Player(1, 'X', true, difficultyNone);
+    expect(component.isVictoriousCombination(winningCombination, squares, player)).toBe(true);
+  }));
+
+  it('isVictoriousCombination should return [false]', async(() => {
+    let winningCombination: [number, number, number] = [1, 2, 3];
+    let squares: Square[] = [];
+    squares.push(new Square(1, 'X'));
+    squares.push(new Square(2, 'O'));
+    squares.push(new Square(3, 'X'));
+    squares.push(new Square(4, ''));
+    squares.push(new Square(5, ''));
+    squares.push(new Square(6, ''));
+    squares.push(new Square(7, ''));
+    squares.push(new Square(8, ''));
+    squares.push(new Square(9, ''));
+    let player: Player = new Player(1, 'X', true, difficultyNone);
+    expect(component.isVictoriousCombination(winningCombination, squares, player)).toBe(false);
   }));
 
   it('determineWinner should return [null]', async(() => {

@@ -17,7 +17,7 @@
   </div>
   <div class="container-fluid">
     <div *ngIf="squares" class="row row-squares">
-      <div *ngFor="let square of squares" (click)="squareClick(square)" class="col-4 square">
+      <div *ngFor="let square of squares" (click)="squareClick(square)" class="col-4 square" [ngClass]="{'bg-success': square.isWinningSquare}">
         {{square.value}}
       </div>
     </div>
