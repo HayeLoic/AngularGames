@@ -3,5 +3,6 @@ export enum DifficultyLevel {
     Easy,
     Medium,
     Hard,
-    VeryHard
+    VeryHard,
+    MachingLearning
 }

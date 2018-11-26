@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Square } from './square';
 import { Player } from './player';
 import { DifficultyLevel } from '../difficulty/difficulty-level';
+import { Move } from './move';
+import { isFulfilled } from 'q';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ export class ArtificialIntelligenceBrainService {
 
   constructor() { }
 
-  chooseSquare(squares: Square[], enableSquares: Square[], difficultyLevel: DifficultyLevel, winningCombinations: Array<[number, number, number]>, currentPlayer: Player, players: Player[]): Square {
+  chooseSquare(squares: Square[], enableSquares: Square[], difficultyLevel: DifficultyLevel, winningCombinations: Array<[number, number, number]>, currentPlayer: Player, players: Player[], historyGamesMoves: Move[][], currentGameMoves: Move[]): Square {
     let squareToPlay: Square;
     switch (difficultyLevel) {
       case DifficultyLevel.Easy: {
@@ -25,8 +27,12 @@ export class ArtificialIntelligenceBrainService {
         squareToPlay = this.getSquareToPlayInHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players);
         break;
       }
-      default: {
+      case DifficultyLevel.VeryHard: {
         squareToPlay = this.getSquareToPlayInVeryHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players);
+        break;
+      }
+      default: {
+        squareToPlay = this.getSquareToPlayInMachineLearningDifficultyLevel(squares, enableSquares, currentPlayer, historyGamesMoves, currentGameMoves);
         break;
       }
     }
@@ -81,6 +87,57 @@ export class ArtificialIntelligenceBrainService {
       squareIndexToPlay = this.getRandomSquareIndex(enableSquares);
       return enableSquares[squareIndexToPlay];
     }
+  }
+
+  getSquareToPlayInMachineLearningDifficultyLevel(squares: Square[], enableSquares: Square[], currentPlayer: Player, historyGamesMoves: Move[][], currentGameMoves: Move[]): Square {
+    let squareIndexToPlay: number = this.getMostProbableWinningSquareIndex(squares, currentPlayer, historyGamesMoves, currentGameMoves);
+    if (squareIndexToPlay != null) {
+      return squares[squareIndexToPlay];
+    }
+    else {
+      squareIndexToPlay = this.getRandomSquareIndex(enableSquares);
+      return enableSquares[squareIndexToPlay];
+    }
+  }
+
+  getSimilarGames(historyGamesMoves: Move[][], currentGameMoves: Move[]): Move[][] {
+    let similarGames: Move[][] = [];
+    for (let historyGameMoves of historyGamesMoves) {
+      let isSimilarGame: boolean = true;
+      for (let currentGameMove of currentGameMoves) {
+        let index: number = currentGameMoves.indexOf(currentGameMove);
+        if (historyGameMoves[index] == null
+          || currentGameMove.squareId != historyGameMoves[index].squareId
+          || currentGameMove.symbol != historyGameMoves[index].symbol) {
+          isSimilarGame = false;
+        }
+      }
+      if (isSimilarGame) {
+        similarGames.push(historyGameMoves);
+      }
+    }
+    return similarGames;
+  }
+
+  getWinningMoveFromSimilarGames(similarGames: Move[][], currentGameMoves: Move[]): Move {
+    let nextIndexToCheck: number = currentGameMoves.length;
+    for (let similarGameMoves of similarGames) {
+      if (similarGameMoves[nextIndexToCheck] != null && similarGameMoves[nextIndexToCheck].isWinningMove) {
+        return similarGameMoves[nextIndexToCheck];
+      }
+    }
+    return undefined;
+  }
+
+  getMostProbableWinningSquareIndex(squares: Square[], player: Player, historyGamesMoves: Move[][], currentGameMoves: Move[]): number {
+    let mostProbableWinningSquareIndex: number;
+    let similarGames: Move[][] = this.getSimilarGames(historyGamesMoves, currentGameMoves);
+    let winningMoveFromSimilarGames = this.getWinningMoveFromSimilarGames(similarGames, currentGameMoves);
+    if (winningMoveFromSimilarGames != null) {
+      mostProbableWinningSquareIndex = winningMoveFromSimilarGames.squareId - 1;
+    }
+
+    return mostProbableWinningSquareIndex;
   }
 
   getRandomSquareIndex(squares: Square[]): number {
