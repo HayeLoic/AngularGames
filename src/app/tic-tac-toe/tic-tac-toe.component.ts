@@ -38,6 +38,7 @@ export class TicTacToeComponent implements OnInit {
     size: "large"
   };
   currentGameMoves: Move[] = [];
+  historyGamesMoves: Move[][] = [];
 
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
 
@@ -54,6 +55,8 @@ export class TicTacToeComponent implements OnInit {
     this.currentPlayer = this.players[0];
     this.winner = null;
     this.isDrawMatch = false;
+    this.historyGamesMoves = this.memorizeGameMoves(this.historyGamesMoves, this.currentGameMoves);
+    this.currentGameMoves = [];
     setInterval(
       () => this.artificialIntelligenceTryToMove(
         this.currentPlayer,
@@ -129,6 +132,12 @@ export class TicTacToeComponent implements OnInit {
     let move: Move = new Move(player.symbol, square.id, isWinningMove);
     moves.push(move);
     return moves;
+  }
+
+  memorizeGameMoves(gamesMoves: Move[][], moves: Move[]): Move[][] {
+    let cloneMoves: Move[] = moves.map(move => Object.assign({}, move));
+    gamesMoves.push(cloneMoves);
+    return gamesMoves;
   }
 
   updateSquareValue(square: Square, currentPlayer: Player): Square {
