@@ -32,7 +32,7 @@ export class ArtificialIntelligenceBrainService {
         break;
       }
       default: {
-        squareToPlay = this.getSquareToPlayInMachineLearningDifficultyLevel(squares, enableSquares, currentPlayer, historyGamesMoves, currentGameMoves);
+        squareToPlay = this.getSquareToPlayInMachineLearningDifficultyLevel(squares, enableSquares, historyGamesMoves, currentGameMoves);
         break;
       }
     }
@@ -89,8 +89,8 @@ export class ArtificialIntelligenceBrainService {
     }
   }
 
-  getSquareToPlayInMachineLearningDifficultyLevel(squares: Square[], enableSquares: Square[], currentPlayer: Player, historyGamesMoves: Move[][], currentGameMoves: Move[]): Square {
-    let squareIndexToPlay: number = this.getMostProbableWinningSquareIndex(squares, currentPlayer, historyGamesMoves, currentGameMoves);
+  getSquareToPlayInMachineLearningDifficultyLevel(squares: Square[], enableSquares: Square[], historyGamesMoves: Move[][], currentGameMoves: Move[]): Square {
+    let squareIndexToPlay: number = this.getMostProbableWinningSquareIndex(historyGamesMoves, currentGameMoves);
     if (squareIndexToPlay != null) {
       return squares[squareIndexToPlay];
     }
@@ -120,23 +120,56 @@ export class ArtificialIntelligenceBrainService {
   }
 
   getWinningMoveFromSimilarGames(similarGames: Move[][], currentGameMoves: Move[]): Move {
-    let nextIndexToCheck: number = currentGameMoves.length;
+    let nextMoveIndex: number = currentGameMoves.length;
     for (let similarGameMoves of similarGames) {
-      if (similarGameMoves[nextIndexToCheck] != null && similarGameMoves[nextIndexToCheck].isWinningMove) {
-        return similarGameMoves[nextIndexToCheck];
+      if (similarGameMoves[nextMoveIndex] != null && similarGameMoves[nextMoveIndex].isWinningMove) {
+        return similarGameMoves[nextMoveIndex];
       }
     }
     return undefined;
   }
 
-  getMostProbableWinningSquareIndex(squares: Square[], player: Player, historyGamesMoves: Move[][], currentGameMoves: Move[]): number {
+  willBeWinningGame(moves: Move[], lastMoveDoneIndex: number): boolean {
+    if ((moves[lastMoveDoneIndex + 1] != null && moves[lastMoveDoneIndex + 1].isWinningMove)
+      || (moves[lastMoveDoneIndex + 3] != null && moves[lastMoveDoneIndex + 3].isWinningMove)
+      || (moves[lastMoveDoneIndex + 5] != null && moves[lastMoveDoneIndex + 5].isWinningMove)
+      || (moves[lastMoveDoneIndex + 7] != null && moves[lastMoveDoneIndex + 7].isWinningMove)
+      || (moves[lastMoveDoneIndex + 9] != null && moves[lastMoveDoneIndex + 9].isWinningMove)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  getMostProbableWinningSquareId(similarGames: Move[][], currentGameMoves: Move[]): number {
+    let lastMoveDoneIndex: number = currentGameMoves.length - 1;
+    let winningGames = similarGames.filter(similarGame => this.willBeWinningGame(similarGame, lastMoveDoneIndex));
+    let results: [number, number][] = [];
+    for (let winningGameMoves of winningGames) {
+      let moveToRead: Move = winningGameMoves[lastMoveDoneIndex + 1];
+      let matchingResults: [number, number][] = results.filter(result => result[0] == moveToRead.squareId);
+      if (matchingResults != null && matchingResults[0] != null) {
+        matchingResults[0][1] += 1;
+      }
+      else {
+        results.push([moveToRead.squareId, 1]);
+      }
+    }
+    return undefined;
+  }
+
+  getMostProbableWinningSquareIndex(historyGamesMoves: Move[][], currentGameMoves: Move[]): number {
     let mostProbableWinningSquareIndex: number;
     let similarGames: Move[][] = this.getSimilarGames(historyGamesMoves, currentGameMoves);
-    let winningMoveFromSimilarGames = this.getWinningMoveFromSimilarGames(similarGames, currentGameMoves);
+    let winningMoveFromSimilarGames: Move = this.getWinningMoveFromSimilarGames(similarGames, currentGameMoves);
     if (winningMoveFromSimilarGames != null) {
       mostProbableWinningSquareIndex = winningMoveFromSimilarGames.squareId - 1;
     }
-
+    let mostProbableWinningSquareId: number = this.getMostProbableWinningSquareId(similarGames, currentGameMoves);
+    if (mostProbableWinningSquareId != null) {
+      mostProbableWinningSquareIndex = mostProbableWinningSquareId - 1;
+    }
     return mostProbableWinningSquareIndex;
   }
 
