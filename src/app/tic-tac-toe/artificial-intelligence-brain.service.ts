@@ -3,7 +3,7 @@ import { Square } from './square';
 import { Player } from './player';
 import { DifficultyLevel } from '../difficulty/difficulty-level';
 import { Move } from './move';
-import { isFulfilled } from 'q';
+import { SquareStatistic } from './square-statistic';
 
 @Injectable({
   providedIn: 'root'
@@ -119,16 +119,6 @@ export class ArtificialIntelligenceBrainService {
     return similarGames;
   }
 
-  getWinningMoveFromSimilarGames(similarGames: Move[][], currentGameMoves: Move[]): Move {
-    let nextMoveIndex: number = currentGameMoves.length;
-    for (let similarGameMoves of similarGames) {
-      if (similarGameMoves[nextMoveIndex] != null && similarGameMoves[nextMoveIndex].isWinningMove) {
-        return similarGameMoves[nextMoveIndex];
-      }
-    }
-    return undefined;
-  }
-
   willBeWinningGame(moves: Move[], lastMoveDoneIndex: number): boolean {
     if ((moves[lastMoveDoneIndex + 1] != null && moves[lastMoveDoneIndex + 1].isWinningMove)
       || (moves[lastMoveDoneIndex + 3] != null && moves[lastMoveDoneIndex + 3].isWinningMove)
@@ -143,32 +133,32 @@ export class ArtificialIntelligenceBrainService {
   }
 
   getMostProbableWinningSquareId(similarGames: Move[][], currentGameMoves: Move[]): number {
+    let squareStatistics: SquareStatistic[] = [];
     let lastMoveDoneIndex: number = currentGameMoves.length - 1;
-    let winningGames = similarGames.filter(similarGame => this.willBeWinningGame(similarGame, lastMoveDoneIndex));
-    let winningGameBySquareId: [number, number][] = [];
-    for (let winningGameMoves of winningGames) {
-      let moveToRead: Move = winningGameMoves[lastMoveDoneIndex + 1];
-      let matchingResults: [number, number][] = winningGameBySquareId.filter(result => result[0] == moveToRead.squareId);
-      if (matchingResults != null && matchingResults[0] != null) {
-        matchingResults[0][1] += 1;
+    for (let similarGameMoves of similarGames) {
+      let moveToRead: Move = similarGameMoves[lastMoveDoneIndex + 1];
+      let matchingSquareStatistics: SquareStatistic[] = squareStatistics.filter(squareStatistic => squareStatistic.squareId == moveToRead.squareId);
+      let willBeWinningGame: boolean = this.willBeWinningGame(similarGameMoves, lastMoveDoneIndex);
+      if (matchingSquareStatistics != null && matchingSquareStatistics[0] != null) {
+        matchingSquareStatistics[0].gameCount += 1;
+        if (willBeWinningGame) {
+          matchingSquareStatistics[0].winningGameCount += 1;
+        }
       }
       else {
-        winningGameBySquareId.push([moveToRead.squareId, 1]);
+        squareStatistics.push(new SquareStatistic(moveToRead.squareId, 0, willBeWinningGame ? 1 : 0));
       }
     }
-    if (winningGameBySquareId != null && winningGameBySquareId.length > 0) {
-      winningGameBySquareId = winningGameBySquareId.sort((tuple1, tuple2) => tuple2[1] - tuple1[1]);
-      return winningGameBySquareId[0][0];
+    if (squareStatistics != null && squareStatistics.length > 0) {
+      squareStatistics = squareStatistics.sort((squareStatistic1, squareStatistic2) =>
+        squareStatistic2.winningGameCount / squareStatistic2.gameCount - squareStatistic1.winningGameCount / squareStatistic1.gameCount);
+      return squareStatistics[0].squareId;
     }
     return undefined;
   }
 
   getMostProbableWinningSquareIndex(historyGamesMoves: Move[][], currentGameMoves: Move[]): number {
     let similarGames: Move[][] = this.getSimilarGames(historyGamesMoves, currentGameMoves);
-    let winningMoveFromSimilarGames: Move = this.getWinningMoveFromSimilarGames(similarGames, currentGameMoves);
-    if (winningMoveFromSimilarGames != null) {
-      return winningMoveFromSimilarGames.squareId - 1;
-    }
     let mostProbableWinningSquareId: number = this.getMostProbableWinningSquareId(similarGames, currentGameMoves);
     if (mostProbableWinningSquareId != null) {
       return mostProbableWinningSquareId - 1;

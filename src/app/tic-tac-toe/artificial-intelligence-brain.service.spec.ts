@@ -20,7 +20,6 @@ describe('ArtificialIntelligenceBrainService', () => {
   ];
   let difficultyNone: Difficulty = new Difficulty(0, 'Aucune', DifficultyLevel.None);
   let difficultyVeryHard: Difficulty = new Difficulty(4, 'Très difficile', DifficultyLevel.VeryHard);
-  let difficultyMachineLearning: Difficulty = new Difficulty(4, 'Apprentissage automatique', DifficultyLevel.MachingLearning);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -894,48 +893,6 @@ describe('ArtificialIntelligenceBrainService', () => {
     expect(service.getSimilarGames(historyGamesMoves, currentGameMoves).length).toBe(1);
   }));
 
-  it('getWinningMoveFromSimilarGames should return [undefined]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
-    let historyGamesMoves: Move[][] = [];
-    let currentGameMoves: Move[] = [];
-    expect(service.getWinningMoveFromSimilarGames(historyGamesMoves, currentGameMoves)).toBe(undefined);
-  }));
-
-  it('getWinningMoveFromSimilarGames should return squareId = [7]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
-    let historyGamesMoves: Move[][] = [];
-    let moves: Move[] = [];
-    moves.push(new Move('O', 1, false));
-    moves.push(new Move('X', 2, false));
-    moves.push(new Move('O', 4, false));
-    moves.push(new Move('X', 5, false));
-    moves.push(new Move('O', 7, true));
-    historyGamesMoves.push(moves);
-    let currentGameMoves: Move[] = [];
-    currentGameMoves.push(new Move('O', 1, false));
-    currentGameMoves.push(new Move('X', 2, false));
-    currentGameMoves.push(new Move('O', 4, false));
-    currentGameMoves.push(new Move('X', 5, false));
-    expect(service.getWinningMoveFromSimilarGames(historyGamesMoves, currentGameMoves).squareId).toBe(7);
-  }));
-
-  it('getWinningMoveFromSimilarGames should return [undefined]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
-    let historyGamesMoves: Move[][] = [];
-    let moves: Move[] = [];
-    moves.push(new Move('O', 1, false));
-    moves.push(new Move('X', 2, false));
-    moves.push(new Move('O', 4, false));
-    moves.push(new Move('X', 5, false));
-    moves.push(new Move('O', 8, false));
-    moves.push(new Move('X', 9, false));
-    moves.push(new Move('O', 7, true));
-    historyGamesMoves.push(moves);
-    let currentGameMoves: Move[] = [];
-    currentGameMoves.push(new Move('O', 1, false));
-    currentGameMoves.push(new Move('X', 2, false));
-    currentGameMoves.push(new Move('O', 4, false));
-    currentGameMoves.push(new Move('X', 5, false));
-    expect(service.getWinningMoveFromSimilarGames(historyGamesMoves, currentGameMoves)).toBe(undefined);
-  }));
-
   it('getMostProbableWinningSquareIndex should return [undefined]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
     let historyGamesMoves: Move[][] = [];
     let currentGameMoves: Move[] = [];
@@ -1007,22 +964,6 @@ describe('ArtificialIntelligenceBrainService', () => {
     currentGameMoves.push(new Move('O', 4, false));
     currentGameMoves.push(new Move('X', 5, false));
     expect(service.getMostProbableWinningSquareId(similarGames, currentGameMoves)).toBe(7);
-  }));
-
-  it('getMostProbableWinningSquareId should return [undefined]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
-    let similarGames: Move[][] = [];
-    let moves: Move[] = [];
-    moves.push(new Move('O', 1, false));
-    moves.push(new Move('X', 2, false));
-    moves.push(new Move('O', 4, false));
-    moves.push(new Move('X', 5, false));
-    similarGames.push(moves);
-    let currentGameMoves: Move[] = [];
-    currentGameMoves.push(new Move('O', 1, false));
-    currentGameMoves.push(new Move('X', 2, false));
-    currentGameMoves.push(new Move('O', 4, false));
-    currentGameMoves.push(new Move('X', 5, false));
-    expect(service.getMostProbableWinningSquareId(similarGames, currentGameMoves)).toBe(undefined);
   }));
 
   it('getMostProbableWinningSquareId should return [4]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
