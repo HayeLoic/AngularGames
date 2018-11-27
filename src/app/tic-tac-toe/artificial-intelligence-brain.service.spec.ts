@@ -958,7 +958,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     currentGameMoves.push(new Move('X', 5, false));
     expect(service.getMostProbableWinningSquareIndex(historyGamesMoves, currentGameMoves)).toBe(6);
   }));
-  
+
   it('willBeWinningGame should return [true]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
     let lastMoveDoneIndex: number = -1;
     let moves: Move[] = [];
@@ -969,7 +969,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     moves.push(new Move('O', 7, true));
     expect(service.willBeWinningGame(moves, lastMoveDoneIndex)).toBe(true);
   }));
-  
+
   it('willBeWinningGame should return [false]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
     let lastMoveDoneIndex: number = 0;
     let moves: Move[] = [];
@@ -980,7 +980,7 @@ describe('ArtificialIntelligenceBrainService', () => {
     moves.push(new Move('O', 7, true));
     expect(service.willBeWinningGame(moves, lastMoveDoneIndex)).toBe(false);
   }));
-  
+
   it('willBeWinningGame should return [true]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
     let lastMoveDoneIndex: number = 3;
     let moves: Move[] = [];
@@ -990,5 +990,82 @@ describe('ArtificialIntelligenceBrainService', () => {
     moves.push(new Move('X', 5, false));
     moves.push(new Move('O', 7, true));
     expect(service.willBeWinningGame(moves, lastMoveDoneIndex)).toBe(true);
+  }));
+
+  it('getMostProbableWinningSquareId should return [7]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let similarGames: Move[][] = [];
+    let moves: Move[] = [];
+    moves.push(new Move('O', 1, false));
+    moves.push(new Move('X', 2, false));
+    moves.push(new Move('O', 4, false));
+    moves.push(new Move('X', 5, false));
+    moves.push(new Move('O', 7, true));
+    similarGames.push(moves);
+    let currentGameMoves: Move[] = [];
+    currentGameMoves.push(new Move('O', 1, false));
+    currentGameMoves.push(new Move('X', 2, false));
+    currentGameMoves.push(new Move('O', 4, false));
+    currentGameMoves.push(new Move('X', 5, false));
+    expect(service.getMostProbableWinningSquareId(similarGames, currentGameMoves)).toBe(7);
+  }));
+
+  it('getMostProbableWinningSquareId should return [undefined]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let similarGames: Move[][] = [];
+    let moves: Move[] = [];
+    moves.push(new Move('O', 1, false));
+    moves.push(new Move('X', 2, false));
+    moves.push(new Move('O', 4, false));
+    moves.push(new Move('X', 5, false));
+    similarGames.push(moves);
+    let currentGameMoves: Move[] = [];
+    currentGameMoves.push(new Move('O', 1, false));
+    currentGameMoves.push(new Move('X', 2, false));
+    currentGameMoves.push(new Move('O', 4, false));
+    currentGameMoves.push(new Move('X', 5, false));
+    expect(service.getMostProbableWinningSquareId(similarGames, currentGameMoves)).toBe(undefined);
+  }));
+
+  it('getMostProbableWinningSquareId should return [4]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let similarGames: Move[][] = [];
+    let moves: Move[] = [];
+    moves.push(new Move('O', 1, false));
+    moves.push(new Move('X', 2, false));
+    moves.push(new Move('O', 4, false));
+    moves.push(new Move('X', 5, false));
+    moves.push(new Move('O', 7, true));
+    similarGames.push(moves);
+    let currentGameMoves: Move[] = [];
+    currentGameMoves.push(new Move('O', 1, false));
+    currentGameMoves.push(new Move('X', 2, false));
+    expect(service.getMostProbableWinningSquareId(similarGames, currentGameMoves)).toBe(4);
+  }));
+
+  it('getMostProbableWinningSquareId should return [5]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let similarGames: Move[][] = [];
+    let moves: Move[] = [];
+    moves.push(new Move('O', 1, false));
+    moves.push(new Move('X', 2, false));
+    moves.push(new Move('O', 4, false));
+    moves.push(new Move('X', 5, false));
+    moves.push(new Move('O', 7, true));
+    let moves2: Move[] = [];
+    moves2.push(new Move('O', 1, false));
+    moves2.push(new Move('X', 2, false));
+    moves2.push(new Move('O', 5, false));
+    moves2.push(new Move('X', 4, false));
+    moves2.push(new Move('O', 9, true));
+    let moves3: Move[] = [];
+    moves3.push(new Move('O', 1, false));
+    moves3.push(new Move('X', 2, false));
+    moves3.push(new Move('O', 5, false));
+    moves3.push(new Move('X', 4, false));
+    moves3.push(new Move('O', 9, true));
+    similarGames.push(moves);
+    similarGames.push(moves2);
+    similarGames.push(moves3);
+    let currentGameMoves: Move[] = [];
+    currentGameMoves.push(new Move('O', 1, false));
+    currentGameMoves.push(new Move('X', 2, false));
+    expect(service.getMostProbableWinningSquareId(similarGames, currentGameMoves)).toBe(5);
   }));
 });

@@ -145,32 +145,35 @@ export class ArtificialIntelligenceBrainService {
   getMostProbableWinningSquareId(similarGames: Move[][], currentGameMoves: Move[]): number {
     let lastMoveDoneIndex: number = currentGameMoves.length - 1;
     let winningGames = similarGames.filter(similarGame => this.willBeWinningGame(similarGame, lastMoveDoneIndex));
-    let results: [number, number][] = [];
+    let winningGameBySquareId: [number, number][] = [];
     for (let winningGameMoves of winningGames) {
       let moveToRead: Move = winningGameMoves[lastMoveDoneIndex + 1];
-      let matchingResults: [number, number][] = results.filter(result => result[0] == moveToRead.squareId);
+      let matchingResults: [number, number][] = winningGameBySquareId.filter(result => result[0] == moveToRead.squareId);
       if (matchingResults != null && matchingResults[0] != null) {
         matchingResults[0][1] += 1;
       }
       else {
-        results.push([moveToRead.squareId, 1]);
+        winningGameBySquareId.push([moveToRead.squareId, 1]);
       }
+    }
+    if (winningGameBySquareId != null && winningGameBySquareId.length > 0) {
+      winningGameBySquareId = winningGameBySquareId.sort((tuple1, tuple2) => tuple2[1] - tuple1[1]);
+      return winningGameBySquareId[0][0];
     }
     return undefined;
   }
 
   getMostProbableWinningSquareIndex(historyGamesMoves: Move[][], currentGameMoves: Move[]): number {
-    let mostProbableWinningSquareIndex: number;
     let similarGames: Move[][] = this.getSimilarGames(historyGamesMoves, currentGameMoves);
     let winningMoveFromSimilarGames: Move = this.getWinningMoveFromSimilarGames(similarGames, currentGameMoves);
     if (winningMoveFromSimilarGames != null) {
-      mostProbableWinningSquareIndex = winningMoveFromSimilarGames.squareId - 1;
+      return winningMoveFromSimilarGames.squareId - 1;
     }
     let mostProbableWinningSquareId: number = this.getMostProbableWinningSquareId(similarGames, currentGameMoves);
     if (mostProbableWinningSquareId != null) {
-      mostProbableWinningSquareIndex = mostProbableWinningSquareId - 1;
+      return mostProbableWinningSquareId - 1;
     }
-    return mostProbableWinningSquareIndex;
+    return undefined;
   }
 
   getRandomSquareIndex(squares: Square[]): number {
