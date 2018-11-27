@@ -146,13 +146,15 @@ export class ArtificialIntelligenceBrainService {
         }
       }
       else {
-        squareStatistics.push(new SquareStatistic(moveToRead.squareId, 0, willBeWinningGame ? 1 : 0));
+        squareStatistics.push(new SquareStatistic(moveToRead.squareId, willBeWinningGame ? 1 : 0, 1));
       }
     }
     if (squareStatistics != null && squareStatistics.length > 0) {
       squareStatistics = squareStatistics.sort((squareStatistic1, squareStatistic2) =>
         squareStatistic2.winningGameCount / squareStatistic2.gameCount - squareStatistic1.winningGameCount / squareStatistic1.gameCount);
-      return squareStatistics[0].squareId;
+      if (squareStatistics[0].winningGameCount > 0) {
+        return squareStatistics[0].squareId;
+      }
     }
     return undefined;
   }

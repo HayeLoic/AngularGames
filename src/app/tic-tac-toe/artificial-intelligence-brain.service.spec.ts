@@ -998,9 +998,9 @@ describe('ArtificialIntelligenceBrainService', () => {
     let moves3: Move[] = [];
     moves3.push(new Move('O', 1, false));
     moves3.push(new Move('X', 2, false));
-    moves3.push(new Move('O', 5, false));
-    moves3.push(new Move('X', 4, false));
-    moves3.push(new Move('O', 9, true));
+    moves3.push(new Move('O', 4, false));
+    moves3.push(new Move('X', 5, false));
+    moves3.push(new Move('O', 8, false));
     similarGames.push(moves);
     similarGames.push(moves2);
     similarGames.push(moves3);
@@ -1008,5 +1008,26 @@ describe('ArtificialIntelligenceBrainService', () => {
     currentGameMoves.push(new Move('O', 1, false));
     currentGameMoves.push(new Move('X', 2, false));
     expect(service.getMostProbableWinningSquareId(similarGames, currentGameMoves)).toBe(5);
+  }));
+
+  it('getMostProbableWinningSquareId should return [undefined]', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let similarGames: Move[][] = [];
+    let moves: Move[] = [];
+    moves.push(new Move('O', 1, false));
+    moves.push(new Move('X', 2, false));
+    moves.push(new Move('O', 4, false));
+    moves.push(new Move('X', 5, false));
+    moves.push(new Move('O', 3, false));
+    moves.push(new Move('X', 6, false));
+    moves.push(new Move('O', 8, false));
+    moves.push(new Move('X', 7, false));
+    moves.push(new Move('O', 9, false));
+    similarGames.push(moves);
+    let currentGameMoves: Move[] = [];
+    currentGameMoves.push(new Move('O', 1, false));
+    currentGameMoves.push(new Move('X', 2, false));
+    currentGameMoves.push(new Move('O', 4, false));
+    currentGameMoves.push(new Move('X', 5, false));
+    expect(service.getMostProbableWinningSquareId(similarGames, currentGameMoves)).toBe(undefined);
   }));
 });
