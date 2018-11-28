@@ -5,6 +5,7 @@ import { ArtificialIntelligenceBrainService } from './artificial-intelligence-br
 import { Difficulty } from '../difficulty/difficulty';
 import { DifficultyService } from '../difficulty/difficulty.service';
 import { Move } from './move';
+import { DifficultyLevel } from '../difficulty/difficulty-level';
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -39,6 +40,10 @@ export class TicTacToeComponent implements OnInit {
   };
   currentGameMoves: Move[] = [];
   historyGamesMoves: Move[][] = [];
+  trainingGameCount: string = "10";
+  trainingGameDoneCount: number = 0;
+  isValidTrainingGameCount: boolean = true;
+  isTrainingRunning: boolean = false;
 
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
 
@@ -46,17 +51,21 @@ export class TicTacToeComponent implements OnInit {
     this.difficulties = this.difficultyService.getDifficulties();
     let defaultDifficulty: Difficulty = this.getDefaultDifficulty(this.difficulties);
     this.nextGamePlayers = this.initializeDefaultPlayers(defaultDifficulty);
-    this.startNewGame();
+    this.startNewGameInUserInterface();
   }
 
-  startNewGame() {
+  startNewAutomaticGame() {
     this.squares = this.initializeSquares(this.maxSquareCount);
-    this.players = this.initializePlayers(this.nextGamePlayers);
     this.currentPlayer = this.players[0];
     this.winner = null;
     this.isDrawMatch = false;
     this.historyGamesMoves = this.memorizeGameMoves(this.historyGamesMoves, this.currentGameMoves);
     this.currentGameMoves = [];
+  }
+
+  startNewGameInUserInterface() {
+    this.players = this.initializePlayers(this.nextGamePlayers);
+    this.startNewAutomaticGame();
     setInterval(
       () => this.artificialIntelligenceTryToMove(
         this.currentPlayer,
@@ -85,6 +94,14 @@ export class TicTacToeComponent implements OnInit {
   initializeDefaultPlayers(difficulty: Difficulty): Player[] {
     let players: Player[] = [];
     players.push(new Player(1, 'X', true, difficulty));
+    players.push(new Player(2, 'O', false, difficulty));
+    return players;
+  }
+
+  initializeAutomaticGamePlayers(): Player[] {
+    let players: Player[] = [];
+    let difficulty: Difficulty = new Difficulty(0, 'Facile', DifficultyLevel.Easy);
+    players.push(new Player(1, 'X', false, difficulty));
     players.push(new Player(2, 'O', false, difficulty));
     return players;
   }
@@ -137,8 +154,10 @@ export class TicTacToeComponent implements OnInit {
   }
 
   memorizeGameMoves(gamesMoves: Move[][], moves: Move[]): Move[][] {
-    let cloneMoves: Move[] = moves.map(move => Object.assign({}, move));
-    gamesMoves.push(cloneMoves);
+    if (moves != null && moves.length > 0) {
+      let cloneMoves: Move[] = moves.map(move => Object.assign({}, move));
+      gamesMoves.push(cloneMoves);
+    }
     return gamesMoves;
   }
 
@@ -194,6 +213,69 @@ export class TicTacToeComponent implements OnInit {
           this.drawVictoriousLine(winningCombination, squares);
         }
       }
+    }
+  }
+
+  isMachineLearningInformationsNeeded(players: Player[]): boolean {
+    let isMachineLearningInformationsNeeded: boolean = false;
+    for (let player of players) {
+      if (!player.isHuman && player.difficulty.difficultyLevel == DifficultyLevel.MachingLearning) {
+        isMachineLearningInformationsNeeded = true;
+      }
+    }
+    return isMachineLearningInformationsNeeded;
+  }
+
+  getHistoryGamesMovesLength(historyGamesMoves: Move[][]): number {
+    if (historyGamesMoves != null && historyGamesMoves[0] != null && historyGamesMoves[0][0] != null) {
+      return historyGamesMoves.length;
+    }
+    else {
+      return 0;
+    }
+  }
+
+  isPositiveInteger(stringToCheck: string): boolean {
+    return /^\d+$/.test(stringToCheck);
+  }
+
+  sleep(sleepTimeInMilliseconds) {
+    return new Promise(resolve => setTimeout(resolve, sleepTimeInMilliseconds));
+  }
+
+  async playAutomaticGames(trainingGameCount: number) {
+    this.trainingGameDoneCount = 0;
+    let memorizedPlayers: Player[] = this.players.map(player => Object.assign({}, player));
+    this.players = this.initializeAutomaticGamePlayers();
+    while (this.trainingGameDoneCount < trainingGameCount) {
+      if (this.isPossibleToPlayForArtificialIntelligence(this.winner, this.currentPlayer, this.isDrawMatch)) {
+        this.artificialIntelligenceTryToMove(
+          this.currentPlayer,
+          this.winner,
+          this.isDrawMatch,
+          this.squares,
+          this.winningCombinations,
+          this.players,
+          this.historyGamesMoves,
+          this.currentGameMoves);
+        if (!this.isPossibleToPlayForArtificialIntelligence(this.winner, this.currentPlayer, this.isDrawMatch)) {
+          this.trainingGameDoneCount++;
+        }
+      }
+      else {
+        this.startNewAutomaticGame();
+      }
+    }
+    this.players = memorizedPlayers;
+    this.startNewGameInUserInterface();
+  }
+
+  startTraining(trainingGameCount: string): void {
+    this.isValidTrainingGameCount = this.isPositiveInteger(trainingGameCount);
+    if (this.isValidTrainingGameCount) {
+      this.isTrainingRunning = true;
+      this.playAutomaticGames(parseInt(trainingGameCount));
+      this.isTrainingRunning = false;
     }
   }
 }

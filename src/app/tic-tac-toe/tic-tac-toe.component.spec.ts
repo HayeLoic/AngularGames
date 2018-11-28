@@ -321,4 +321,28 @@ describe('TicTacToeComponent', () => {
     moves = component.memorizeMove(moves, player, square, null);
     expect(moves.length).toBe(1);
   }));
+  
+  it('isPositiveInteger should return [true]', async(() => {
+    expect(component.isPositiveInteger("5")).toBe(true);
+  }));
+  
+  it('isPositiveInteger should return [false] for empty value', async(() => {
+    expect(component.isPositiveInteger("")).toBe(false);
+  }));
+  
+  it('isPositiveInteger should return [false] for stringValue', async(() => {
+    expect(component.isPositiveInteger("stringValue")).toBe(false);
+  }));
+  
+  it('isPositiveInteger should return [false] for 1.5', async(() => {
+    expect(component.isPositiveInteger("1.5")).toBe(false);
+  }));
+  
+  it('isPositiveInteger should return [false] for 1,5', async(() => {
+    expect(component.isPositiveInteger("1,5")).toBe(false);
+  }));
+  
+  it('isPositiveInteger should return [false] for -1', async(() => {
+    expect(component.isPositiveInteger("-1")).toBe(false);
+  }));
 });
