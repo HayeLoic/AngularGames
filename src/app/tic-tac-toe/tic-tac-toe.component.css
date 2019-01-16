@@ -26,3 +26,19 @@
 .is-human-switch-wrapper {
     margin-bottom: 10px;
 }
+
+.informations-container {
+    padding-top: 20px;
+}
+
+.maching-learning-informations-wrapper {
+    margin-top: 20px;
+}
+
+.btn-start-machine-learning {
+    margin-left: 10px;
+}
+
+.current-player-wrapper {
+    margin-top: 20px;
+}

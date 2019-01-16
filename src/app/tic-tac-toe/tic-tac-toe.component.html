@@ -5,15 +5,15 @@
       <span *ngIf="player.isHuman">Joueur humain</span>
       <span *ngIf="!player.isHuman">Ordinateur en mode {{player.difficulty.name}}</span>
     </div>
-    <div *ngIf="isMachineLearningInformationsNeeded(players)">
+    <div *ngIf="isMachineLearningInformationsNeeded(players)" class="maching-learning-informations-wrapper">
       <span>Apprentissage effectué sur {{getHistoryGamesMovesLength(historyGamesMoves)}} parties</span>
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalStartMachineLearning">
+      <button type="button" class="btn btn-primary btn-start-machine-learning" data-toggle="modal" data-target="#modalStartMachineLearning">
         Envoyer l'ordinateur s'entraîner
       </button>
     </div>
-    <span *ngIf="currentPlayer && !winner && !isDrawMatch">
+    <div *ngIf="currentPlayer && !winner && !isDrawMatch" class="current-player-wrapper">
       Prochain joueur : {{currentPlayer.symbol}}
-    </span>
+    </div>
     <span *ngIf="winner">
       Gagnant : {{winner.symbol}}
     </span>
@@ -73,7 +73,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalStartMachineLearningLabel">Entrainner l'ordinateur</h5>
+        <h5 class="modal-title" id="modalStartMachineLearningLabel">Entraîner l'ordinateur</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
