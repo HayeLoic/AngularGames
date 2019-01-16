@@ -91,14 +91,14 @@
           </div>
         </div>
         <div *ngIf="isTrainingRunning">
+          <div class="loader-info">{{getAdvancementLabel(trainingGameDoneCount, trainingGameCount)}}</div>
           <div class="loader"></div>
-          <p>{{getAdvancementLabel(trainingGameDoneCount, trainingGameCount)}}</p>
         </div>
       </div>
       <div class="modal-footer">
         <button *ngIf="!isTrainingRunning" type="button" class="btn btn-secondary" [ngClass]="{'disabled': isTrainingRunning}"
-          data-dismiss="modal">Annuler</button>
-        <button *ngIf="isTrainingRunning" type="button" class="btn btn-secondary disabled">Annuler</button>
+          data-dismiss="modal">Fermer</button>
+        <button *ngIf="isTrainingRunning" type="button" class="btn btn-secondary disabled">Fermer</button>
         <button *ngIf="!isTrainingRunning" type="button" class="btn btn-primary" (click)="startTraining(trainingGameCount)">Commencer
           l'entraînement</button>
         <button *ngIf="isTrainingRunning" type="button" class="btn btn-primary disabled">Commencer l'entraînement</button>

@@ -321,28 +321,44 @@ describe('TicTacToeComponent', () => {
     moves = component.memorizeMove(moves, player, square, null);
     expect(moves.length).toBe(1);
   }));
-  
+
   it('isPositiveInteger should return [true]', async(() => {
     expect(component.isPositiveInteger("5")).toBe(true);
   }));
-  
+
   it('isPositiveInteger should return [false] for empty value', async(() => {
     expect(component.isPositiveInteger("")).toBe(false);
   }));
-  
+
   it('isPositiveInteger should return [false] for stringValue', async(() => {
     expect(component.isPositiveInteger("stringValue")).toBe(false);
   }));
-  
+
   it('isPositiveInteger should return [false] for 1.5', async(() => {
     expect(component.isPositiveInteger("1.5")).toBe(false);
   }));
-  
+
   it('isPositiveInteger should return [false] for 1,5', async(() => {
     expect(component.isPositiveInteger("1,5")).toBe(false);
   }));
-  
+
   it('isPositiveInteger should return [false] for -1', async(() => {
     expect(component.isPositiveInteger("-1")).toBe(false);
+  }));
+
+  it('isAMultipleOf should return [false] for 7 is a multiple of 10', async(() => {
+    expect(component.isAMultipleOf(7, 10)).toBe(false);
+  }));
+
+  it('isAMultipleOf should return [false] for 10 is a multiple of 7', async(() => {
+    expect(component.isAMultipleOf(10, 7)).toBe(false);
+  }));
+
+  it('isAMultipleOf should return [false] for 100 is a multiple of 10000', async(() => {
+    expect(component.isAMultipleOf(100, 10000)).toBe(false);
+  }));
+
+  it('isAMultipleOf should return [true] for 10000 is a multiple of 100', async(() => {
+    expect(component.isAMultipleOf(10000, 100)).toBe(true);
   }));
 });

@@ -239,7 +239,20 @@ export class TicTacToeComponent implements OnInit {
     return /^\d+$/.test(stringToCheck);
   }
 
+  delay(milliseconds: number, count: number): Promise<number> {
+    return new Promise<number>(resolve => {
+      setTimeout(() => {
+        resolve(count);
+      }, milliseconds);
+    });
+  }
+
+  isAMultipleOf(numberToCkeck, multipleValue): boolean {
+    return numberToCkeck % multipleValue == 0;
+  }
+
   async playAutomaticGames(trainingGameCount: number): Promise<void> {
+    await this.delay(1, 0);
     this.trainingGameDoneCount = 0;
     let memorizedPlayers: Player[] = this.players.map(player => Object.assign({}, player));
     this.players = this.initializeAutomaticGamePlayers();
@@ -256,7 +269,9 @@ export class TicTacToeComponent implements OnInit {
           this.currentGameMoves);
         if (!this.isPossibleToPlayForArtificialIntelligence(this.winner, this.currentPlayer, this.isDrawMatch)) {
           this.trainingGameDoneCount++;
-          await this.delay(1, 0);
+          if (this.isAMultipleOf(this.trainingGameDoneCount, 1000)) {
+            await this.delay(1, 0);
+          }
         }
       }
       else {
@@ -265,20 +280,6 @@ export class TicTacToeComponent implements OnInit {
     }
     this.players = memorizedPlayers;
     this.startNewGameInUserInterface();
-  }
-
-  incrementValue(value: number): Promise<number> {
-    return new Promise<number>((resolve) => {
-      resolve(value++);
-    });
-  }
-
-  delay(milliseconds: number, count: number): Promise<number> {
-    return new Promise<number>(resolve => {
-      setTimeout(() => {
-        resolve(count);
-      }, milliseconds);
-    });
   }
 
   async startTraining(trainingGameCount: string): Promise<void> {
@@ -290,6 +291,6 @@ export class TicTacToeComponent implements OnInit {
   }
 
   getAdvancementLabel(trainingGameDoneCount: number, trainingGameCount: string): string {
-    return "Avancement : " + trainingGameDoneCount + "/" + trainingGameCount;
+    return Math.round(trainingGameDoneCount / parseInt(trainingGameCount) * 100) + "%";
   }
 }
