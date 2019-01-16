@@ -11,15 +11,17 @@
         Envoyer l'ordinateur s'entraîner
       </button>
     </div>
-    <div *ngIf="currentPlayer && !winner && !isDrawMatch" class="current-player-wrapper">
-      Prochain joueur : {{currentPlayer.symbol}}
+    <div class="move-information-wrapper">
+      <span *ngIf="currentPlayer && !winner && !isDrawMatch">
+        Prochain joueur : {{currentPlayer.symbol}}
+      </span>
+      <span *ngIf="winner">
+        Gagnant : {{winner.symbol}}
+      </span>
+      <span *ngIf="isDrawMatch">
+        Match nul !
+      </span>
     </div>
-    <span *ngIf="winner">
-      Gagnant : {{winner.symbol}}
-    </span>
-    <span *ngIf="isDrawMatch">
-      Match nul !
-    </span>
   </div>
   <div class="container-fluid">
     <div *ngIf="squares" class="row row-squares">
@@ -71,7 +73,7 @@
 <div class="modal fade" id="modalStartMachineLearning" tabindex="-1" role="dialog" aria-labelledby="modalStartMachineLearningLabel"
   aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalStartMachineLearningLabel">Entraîner l'ordinateur</h5>
         <button *ngIf="!isTrainingRunning" type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -85,7 +87,7 @@
         <div *ngIf="!isTrainingRunning">
           <p>Vous allez envoyer l'ordinateur faire une session d'entraînement.</p>
           <p>Choisissez un nombre de parties que l'ordinateur devra faire contre lui-même.</p>
-          <input class="form-control" [ngClass]="{'is-invalid': !isValidTrainingGameCount}" type="text" [(ngModel)]="trainingGameCount">
+          <input class="form-control" [ngClass]="{'is-invalid': !isValidTrainingGameCount}" type="text" [(ngModel)]="trainingGameCount" name="trainingGameCountInput">
           <div class="invalid-feedback">
             Le nombre de parties doit être un entier positif.
           </div>
@@ -99,10 +101,10 @@
         <button *ngIf="!isTrainingRunning" type="button" class="btn btn-secondary" [ngClass]="{'disabled': isTrainingRunning}"
           data-dismiss="modal">Fermer</button>
         <button *ngIf="isTrainingRunning" type="button" class="btn btn-secondary disabled">Fermer</button>
-        <button *ngIf="!isTrainingRunning" type="button" class="btn btn-primary" (click)="startTraining(trainingGameCount)">Commencer
+        <button *ngIf="!isTrainingRunning" type="submit" class="btn btn-primary" (click)="startTraining(trainingGameCount)">Commencer
           l'entraînement</button>
         <button *ngIf="isTrainingRunning" type="button" class="btn btn-primary disabled">Commencer l'entraînement</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
