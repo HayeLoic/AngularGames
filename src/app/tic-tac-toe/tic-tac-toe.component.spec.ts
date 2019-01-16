@@ -361,4 +361,20 @@ describe('TicTacToeComponent', () => {
   it('isAMultipleOf should return [true] for 10000 is a multiple of 100', async(() => {
     expect(component.isAMultipleOf(10000, 100)).toBe(true);
   }));
+  
+  it('determineIfIsValidTrainingGameCount should return [false]', async(() => {
+    expect(component.determineIfIsValidTrainingGameCount("", 1000000)).toBe(false);
+  }));
+  
+  it('determineIfIsValidTrainingGameCount should return [false]', async(() => {
+    expect(component.determineIfIsValidTrainingGameCount("1000001", 1000000)).toBe(false);
+  }));
+  
+  it('determineIfIsValidTrainingGameCount should return [true]', async(() => {
+    expect(component.determineIfIsValidTrainingGameCount("1", 1000000)).toBe(true);
+  }));
+  
+  it('determineIfIsValidTrainingGameCount should return [true]', async(() => {
+    expect(component.determineIfIsValidTrainingGameCount("1000000", 1000000)).toBe(true);
+  }));
 });

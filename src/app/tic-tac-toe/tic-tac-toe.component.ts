@@ -44,6 +44,7 @@ export class TicTacToeComponent implements OnInit {
   trainingGameDoneCount: number = 0;
   isValidTrainingGameCount: boolean = true;
   isTrainingRunning: boolean = false;
+  maximalTrainingGameCount: number = 1000000;
 
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
 
@@ -226,9 +227,13 @@ export class TicTacToeComponent implements OnInit {
     return isMachineLearningInformationsNeeded;
   }
 
+  parseNumberToFrenchLocaleString(numberToParse: number): string {
+    return numberToParse.toLocaleString('fr-FR');
+  }
+
   getHistoryGamesMovesLength(historyGamesMoves: Move[][]): string {
     if (historyGamesMoves != null && historyGamesMoves[0] != null && historyGamesMoves[0][0] != null) {
-      return historyGamesMoves.length.toLocaleString('fr-FR');
+      return this.parseNumberToFrenchLocaleString(historyGamesMoves.length);
     }
     else {
       return "0";
@@ -237,6 +242,10 @@ export class TicTacToeComponent implements OnInit {
 
   isPositiveInteger(stringToCheck: string): boolean {
     return /^\d+$/.test(stringToCheck);
+  }
+
+  determineIfIsValidTrainingGameCount(stringToCheck: string, maximalValueAuthorized:number): boolean {
+    return this.isPositiveInteger(stringToCheck) && parseInt(stringToCheck) <= maximalValueAuthorized;
   }
 
   delay(milliseconds: number, count: number): Promise<number> {
@@ -283,7 +292,8 @@ export class TicTacToeComponent implements OnInit {
   }
 
   async startTraining(trainingGameCount: string): Promise<void> {
-    if (this.isPositiveInteger(trainingGameCount)) {
+    this.isValidTrainingGameCount = this.determineIfIsValidTrainingGameCount(trainingGameCount, this.maximalTrainingGameCount);
+    if (this.isValidTrainingGameCount) {
       this.isTrainingRunning = true;
       await this.playAutomaticGames(parseInt(trainingGameCount));
       this.isTrainingRunning = false;
@@ -292,5 +302,9 @@ export class TicTacToeComponent implements OnInit {
 
   getAdvancementLabel(trainingGameDoneCount: number, trainingGameCount: string): string {
     return Math.round(trainingGameDoneCount / parseInt(trainingGameCount) * 100) + "%";
+  }
+
+  getMaximalTrainingGameCount(): string {
+    return this.parseNumberToFrenchLocaleString(this.maximalTrainingGameCount);
   }
 }

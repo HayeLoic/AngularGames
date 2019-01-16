@@ -89,7 +89,7 @@
           <p>Choisissez un nombre de parties que l'ordinateur devra faire contre lui-même.</p>
           <input class="form-control" [ngClass]="{'is-invalid': !isValidTrainingGameCount}" type="text" [(ngModel)]="trainingGameCount" name="trainingGameCountInput">
           <div class="invalid-feedback">
-            Le nombre de parties doit être un entier positif.
+            Le nombre de parties doit être un entier positif et inférieur à {{getMaximalTrainingGameCount()}}.
           </div>
         </div>
         <div *ngIf="isTrainingRunning">
