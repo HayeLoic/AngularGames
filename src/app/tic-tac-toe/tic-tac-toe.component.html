@@ -69,12 +69,15 @@
   </div>
 </div>
 <div class="modal fade" id="modalStartMachineLearning" tabindex="-1" role="dialog" aria-labelledby="modalStartMachineLearningLabel"
-  aria-hidden="true">
+  aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalStartMachineLearningLabel">Entraîner l'ordinateur</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button *ngIf="!isTrainingRunning" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <button *ngIf="isTrainingRunning" type="button" class="close disabled" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -84,19 +87,21 @@
           <p>Choisissez un nombre de parties que l'ordinateur devra faire contre lui-même.</p>
           <input class="form-control" [ngClass]="{'is-invalid': !isValidTrainingGameCount}" type="text" [(ngModel)]="trainingGameCount">
           <div class="invalid-feedback">
-              Le nombre de parties doit être un entier positif.
-            </div>
+            Le nombre de parties doit être un entier positif.
+          </div>
         </div>
         <div *ngIf="isTrainingRunning">
-          <p>Entrainnement en cours !</p>
-          <p>Nombre total de parties à faire : {{trainingGameCount}}</p>
-          <p>Nombre de parties jouées : {{trainingGameDoneCount}}</p>
+          <div class="loader"></div>
+          <p>{{getAdvancementLabel(trainingGameDoneCount, trainingGameCount)}}</p>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-primary" (click)="startTraining(trainingGameCount)">Commencer
-          l'entrainnement</button>
+        <button *ngIf="!isTrainingRunning" type="button" class="btn btn-secondary" [ngClass]="{'disabled': isTrainingRunning}"
+          data-dismiss="modal">Annuler</button>
+        <button *ngIf="isTrainingRunning" type="button" class="btn btn-secondary disabled">Annuler</button>
+        <button *ngIf="!isTrainingRunning" type="button" class="btn btn-primary" (click)="startTraining(trainingGameCount)">Commencer
+          l'entraînement</button>
+        <button *ngIf="isTrainingRunning" type="button" class="btn btn-primary disabled">Commencer l'entraînement</button>
       </div>
     </div>
   </div>

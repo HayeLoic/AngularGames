@@ -226,12 +226,12 @@ export class TicTacToeComponent implements OnInit {
     return isMachineLearningInformationsNeeded;
   }
 
-  getHistoryGamesMovesLength(historyGamesMoves: Move[][]): number {
+  getHistoryGamesMovesLength(historyGamesMoves: Move[][]): string {
     if (historyGamesMoves != null && historyGamesMoves[0] != null && historyGamesMoves[0][0] != null) {
-      return historyGamesMoves.length;
+      return historyGamesMoves.length.toLocaleString('fr-FR');
     }
     else {
-      return 0;
+      return "0";
     }
   }
 
@@ -239,11 +239,7 @@ export class TicTacToeComponent implements OnInit {
     return /^\d+$/.test(stringToCheck);
   }
 
-  sleep(sleepTimeInMilliseconds) {
-    return new Promise(resolve => setTimeout(resolve, sleepTimeInMilliseconds));
-  }
-
-  async playAutomaticGames(trainingGameCount: number) {
+  async playAutomaticGames(trainingGameCount: number): Promise<void> {
     this.trainingGameDoneCount = 0;
     let memorizedPlayers: Player[] = this.players.map(player => Object.assign({}, player));
     this.players = this.initializeAutomaticGamePlayers();
@@ -260,6 +256,7 @@ export class TicTacToeComponent implements OnInit {
           this.currentGameMoves);
         if (!this.isPossibleToPlayForArtificialIntelligence(this.winner, this.currentPlayer, this.isDrawMatch)) {
           this.trainingGameDoneCount++;
+          await this.delay(1, 0);
         }
       }
       else {
@@ -270,12 +267,29 @@ export class TicTacToeComponent implements OnInit {
     this.startNewGameInUserInterface();
   }
 
-  startTraining(trainingGameCount: string): void {
-    this.isValidTrainingGameCount = this.isPositiveInteger(trainingGameCount);
-    if (this.isValidTrainingGameCount) {
+  incrementValue(value: number): Promise<number> {
+    return new Promise<number>((resolve) => {
+      resolve(value++);
+    });
+  }
+
+  delay(milliseconds: number, count: number): Promise<number> {
+    return new Promise<number>(resolve => {
+      setTimeout(() => {
+        resolve(count);
+      }, milliseconds);
+    });
+  }
+
+  async startTraining(trainingGameCount: string): Promise<void> {
+    if (this.isPositiveInteger(trainingGameCount)) {
       this.isTrainingRunning = true;
-      this.playAutomaticGames(parseInt(trainingGameCount));
+      await this.playAutomaticGames(parseInt(trainingGameCount));
       this.isTrainingRunning = false;
     }
+  }
+
+  getAdvancementLabel(trainingGameDoneCount: number, trainingGameCount: string): string {
+    return "Avancement : " + trainingGameDoneCount + "/" + trainingGameCount;
   }
 }
