@@ -101,7 +101,7 @@ export class TicTacToeComponent implements OnInit {
 
   initializeAutomaticGamePlayers(): Player[] {
     let players: Player[] = [];
-    let difficulty: Difficulty = new Difficulty(0, 'Difficile', DifficultyLevel.Hard);
+    let difficulty: Difficulty = new Difficulty(0, 'Moyen', DifficultyLevel.Medium);
     players.push(new Player(1, 'X', false, difficulty));
     players.push(new Player(2, 'O', false, difficulty));
     return players;
