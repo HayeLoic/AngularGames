@@ -132,6 +132,38 @@ export class ArtificialIntelligenceBrainService {
     }
   }
 
+  willBeLosingGame(moves: Move[], lastMoveDoneIndex: number): boolean {
+    if ((moves[lastMoveDoneIndex + 2] != null && moves[lastMoveDoneIndex + 2].isWinningMove)
+      || (moves[lastMoveDoneIndex + 4] != null && moves[lastMoveDoneIndex + 4].isWinningMove)
+      || (moves[lastMoveDoneIndex + 6] != null && moves[lastMoveDoneIndex + 6].isWinningMove)
+      || (moves[lastMoveDoneIndex + 8] != null && moves[lastMoveDoneIndex + 8].isWinningMove)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  CompareWinningGameCountAndLosingGameCount(squareStatistic1: SquareStatistic, squareStatistic2: SquareStatistic): number {
+    if (squareStatistic1.winningGameCount < squareStatistic2.winningGameCount) {
+      return 1;
+    } else if (squareStatistic1.winningGameCount > squareStatistic2.winningGameCount) {
+      return -1;
+    }
+
+    if (squareStatistic1.losingGameCount > squareStatistic2.losingGameCount) {
+      return 1;
+    } else if (squareStatistic1.losingGameCount < squareStatistic2.losingGameCount) {
+      return -1
+    } else {
+      return 0;
+    }
+  }
+
+  sortByWinningGameCountDescThenByLosingGameCountAsc(squareStatistics: SquareStatistic[]): SquareStatistic[] {
+    return squareStatistics.sort((squareStatistic1, squareStatistic2) => this.CompareWinningGameCountAndLosingGameCount(squareStatistic1, squareStatistic2));
+  }
+
   getMostProbableWinningSquareId(similarGames: Move[][], currentGameMoves: Move[]): number {
     let squareStatistics: SquareStatistic[] = [];
     let lastMoveDoneIndex: number = currentGameMoves.length - 1;
@@ -139,22 +171,23 @@ export class ArtificialIntelligenceBrainService {
       let moveToRead: Move = similarGameMoves[lastMoveDoneIndex + 1];
       let matchingSquareStatistics: SquareStatistic[] = squareStatistics.filter(squareStatistic => squareStatistic.squareId == moveToRead.squareId);
       let willBeWinningGame: boolean = this.willBeWinningGame(similarGameMoves, lastMoveDoneIndex);
+      let willBeLosingGame: boolean = this.willBeLosingGame(similarGameMoves, lastMoveDoneIndex);
       if (matchingSquareStatistics != null && matchingSquareStatistics[0] != null) {
         matchingSquareStatistics[0].gameCount += 1;
         if (willBeWinningGame) {
           matchingSquareStatistics[0].winningGameCount += 1;
         }
+        if (willBeLosingGame) {
+          matchingSquareStatistics[0].losingGameCount += 1;
+        }
       }
       else {
-        squareStatistics.push(new SquareStatistic(moveToRead.squareId, willBeWinningGame ? 1 : 0, 1));
+        squareStatistics.push(new SquareStatistic(moveToRead.squareId, willBeWinningGame ? 1 : 0, willBeLosingGame ? 1 : 0, 1));
       }
     }
     if (squareStatistics != null && squareStatistics.length > 0) {
-      squareStatistics = squareStatistics.sort((squareStatistic1, squareStatistic2) =>
-        squareStatistic2.winningGameCount / squareStatistic2.gameCount - squareStatistic1.winningGameCount / squareStatistic1.gameCount);
-      if (squareStatistics[0].winningGameCount > 0) {
-        return squareStatistics[0].squareId;
-      }
+      squareStatistics = this.sortByWinningGameCountDescThenByLosingGameCountAsc(squareStatistics);
+      return squareStatistics[0].squareId;
     }
     return undefined;
   }
