@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Square } from './square';
 import { Player } from './player';
-import { DifficultyLevel } from '../difficulty/difficulty-level';
 import { ArtificialIntelligenceBrainService } from './artificial-intelligence-brain.service';
 import { Difficulty } from '../difficulty/difficulty';
 import { DifficultyService } from '../difficulty/difficulty.service';
+import { Move } from './move';
+import { DifficultyLevel } from '../difficulty/difficulty-level';
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -37,6 +38,13 @@ export class TicTacToeComponent implements OnInit {
     defaultBgColor: "#DADADA",
     size: "large"
   };
+  currentGameMoves: Move[] = [];
+  historyGamesMoves: Move[][] = [];
+  trainingGameCount: string = "10";
+  trainingGameDoneCount: number = 0;
+  isValidTrainingGameCount: boolean = true;
+  isTrainingRunning: boolean = false;
+  maximalTrainingGameCount: number = 1000000;
 
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
 
@@ -44,15 +52,21 @@ export class TicTacToeComponent implements OnInit {
     this.difficulties = this.difficultyService.getDifficulties();
     let defaultDifficulty: Difficulty = this.getDefaultDifficulty(this.difficulties);
     this.nextGamePlayers = this.initializeDefaultPlayers(defaultDifficulty);
-    this.startNewGame();
+    this.startNewGameInUserInterface();
   }
 
-  startNewGame() {
+  startNewAutomaticGame() {
     this.squares = this.initializeSquares(this.maxSquareCount);
-    this.players = this.initializePlayers(this.nextGamePlayers);
     this.currentPlayer = this.players[0];
     this.winner = null;
     this.isDrawMatch = false;
+    this.historyGamesMoves = this.memorizeGameMoves(this.historyGamesMoves, this.currentGameMoves);
+    this.currentGameMoves = [];
+  }
+
+  startNewGameInUserInterface() {
+    this.players = this.initializePlayers(this.nextGamePlayers);
+    this.startNewAutomaticGame();
     setInterval(
       () => this.artificialIntelligenceTryToMove(
         this.currentPlayer,
@@ -60,7 +74,9 @@ export class TicTacToeComponent implements OnInit {
         this.isDrawMatch,
         this.squares,
         this.winningCombinations,
-        this.players),
+        this.players,
+        this.historyGamesMoves,
+        this.currentGameMoves),
       this.tryToMoveIntervalInMilliseconds);
   }
 
@@ -83,15 +99,23 @@ export class TicTacToeComponent implements OnInit {
     return players;
   }
 
+  initializeAutomaticGamePlayers(): Player[] {
+    let players: Player[] = [];
+    let difficulty: Difficulty = new Difficulty(0, 'Moyen', DifficultyLevel.Medium);
+    players.push(new Player(1, 'X', false, difficulty));
+    players.push(new Player(2, 'O', false, difficulty));
+    return players;
+  }
+
   initializePlayers(nextGamePlayers: Player[]): Player[] {
     let players: Player[] = nextGamePlayers.map(player => Object.assign({}, player));
     return players;
   }
 
-  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[], winningCombinations: Array<[number, number, number]>, players: Player[]) {
+  artificialIntelligenceTryToMove(currentPlayer: Player, winner: Player, isDrawMatch: boolean, squares: Square[], winningCombinations: Array<[number, number, number]>, players: Player[], historyGamesMoves: Move[][], currentGameMoves: Move[]) {
     if (this.isPossibleToPlayForArtificialIntelligence(winner, currentPlayer, isDrawMatch)) {
       let enableSquares: Square[] = this.getEnableSquares(squares);
-      let squareToPlay = this.artificialIntelligenceBrainService.chooseSquare(squares, enableSquares, currentPlayer.difficulty.difficultyLevel, winningCombinations, currentPlayer, players);
+      let squareToPlay = this.artificialIntelligenceBrainService.chooseSquare(squares, enableSquares, currentPlayer.difficulty.difficultyLevel, winningCombinations, currentPlayer, players, historyGamesMoves, currentGameMoves);
       this.makeMove(squareToPlay);
     }
   }
@@ -118,8 +142,24 @@ export class TicTacToeComponent implements OnInit {
     square = this.updateSquareValue(square, this.currentPlayer);
     this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
     this.isDrawMatch = this.determineIsDrawMatch(this.squares, this.winner);
+    this.currentGameMoves = this.memorizeMove(this.currentGameMoves, this.currentPlayer, square, this.winner);
     this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
     this.displayVictoryLine(this.winningCombinations, this.squares, this.winner);
+  }
+
+  memorizeMove(moves: Move[], player: Player, square: Square, winner: Player): Move[] {
+    let isWinningMove: boolean = (winner != null);
+    let move: Move = new Move(player.symbol, square.id, isWinningMove);
+    moves.push(move);
+    return moves;
+  }
+
+  memorizeGameMoves(gamesMoves: Move[][], moves: Move[]): Move[][] {
+    if (moves != null && moves.length > 0) {
+      let cloneMoves: Move[] = moves.map(move => Object.assign({}, move));
+      gamesMoves.push(cloneMoves);
+    }
+    return gamesMoves;
   }
 
   updateSquareValue(square: Square, currentPlayer: Player): Square {
@@ -175,5 +215,96 @@ export class TicTacToeComponent implements OnInit {
         }
       }
     }
+  }
+
+  isMachineLearningInformationsNeeded(players: Player[]): boolean {
+    let isMachineLearningInformationsNeeded: boolean = false;
+    for (let player of players) {
+      if (!player.isHuman && player.difficulty.difficultyLevel == DifficultyLevel.MachingLearning) {
+        isMachineLearningInformationsNeeded = true;
+      }
+    }
+    return isMachineLearningInformationsNeeded;
+  }
+
+  parseNumberToFrenchLocaleString(numberToParse: number): string {
+    return numberToParse.toLocaleString('fr-FR');
+  }
+
+  getHistoryGamesMovesLength(historyGamesMoves: Move[][]): string {
+    if (historyGamesMoves != null && historyGamesMoves[0] != null && historyGamesMoves[0][0] != null) {
+      return this.parseNumberToFrenchLocaleString(historyGamesMoves.length);
+    }
+    else {
+      return "0";
+    }
+  }
+
+  isPositiveInteger(stringToCheck: string): boolean {
+    return /^\d+$/.test(stringToCheck);
+  }
+
+  determineIfIsValidTrainingGameCount(stringToCheck: string, maximalValueAuthorized:number): boolean {
+    return this.isPositiveInteger(stringToCheck) && parseInt(stringToCheck) <= maximalValueAuthorized;
+  }
+
+  delay(milliseconds: number, count: number): Promise<number> {
+    return new Promise<number>(resolve => {
+      setTimeout(() => {
+        resolve(count);
+      }, milliseconds);
+    });
+  }
+
+  isAMultipleOf(numberToCkeck, multipleValue): boolean {
+    return numberToCkeck % multipleValue == 0;
+  }
+
+  async playAutomaticGames(trainingGameCount: number): Promise<void> {
+    await this.delay(1, 0);
+    this.trainingGameDoneCount = 0;
+    let memorizedPlayers: Player[] = this.players.map(player => Object.assign({}, player));
+    this.players = this.initializeAutomaticGamePlayers();
+    while (this.trainingGameDoneCount < trainingGameCount) {
+      if (this.isPossibleToPlayForArtificialIntelligence(this.winner, this.currentPlayer, this.isDrawMatch)) {
+        this.artificialIntelligenceTryToMove(
+          this.currentPlayer,
+          this.winner,
+          this.isDrawMatch,
+          this.squares,
+          this.winningCombinations,
+          this.players,
+          this.historyGamesMoves,
+          this.currentGameMoves);
+        if (!this.isPossibleToPlayForArtificialIntelligence(this.winner, this.currentPlayer, this.isDrawMatch)) {
+          this.trainingGameDoneCount++;
+          if (this.isAMultipleOf(this.trainingGameDoneCount, 1000)) {
+            await this.delay(1, 0);
+          }
+        }
+      }
+      else {
+        this.startNewAutomaticGame();
+      }
+    }
+    this.players = memorizedPlayers;
+    this.startNewGameInUserInterface();
+  }
+
+  async startTraining(trainingGameCount: string): Promise<void> {
+    this.isValidTrainingGameCount = this.determineIfIsValidTrainingGameCount(trainingGameCount, this.maximalTrainingGameCount);
+    if (this.isValidTrainingGameCount) {
+      this.isTrainingRunning = true;
+      await this.playAutomaticGames(parseInt(trainingGameCount));
+      this.isTrainingRunning = false;
+    }
+  }
+
+  getAdvancementLabel(trainingGameDoneCount: number, trainingGameCount: string): string {
+    return Math.round(trainingGameDoneCount / parseInt(trainingGameCount) * 100) + "%";
+  }
+
+  getMaximalTrainingGameCount(): string {
+    return this.parseNumberToFrenchLocaleString(this.maximalTrainingGameCount);
   }
 }

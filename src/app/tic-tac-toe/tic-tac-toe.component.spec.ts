@@ -7,6 +7,7 @@ import { Difficulty } from '../difficulty/difficulty';
 import { DifficultyLevel } from '../difficulty/difficulty-level';
 import { Square } from './square';
 import { Player } from './player';
+import { Move } from './move';
 
 describe('TicTacToeComponent', () => {
   let component: TicTacToeComponent;
@@ -311,5 +312,69 @@ describe('TicTacToeComponent', () => {
     squares.push(new Square(9, 'O'));
     let winner: Player;
     expect(component.determineIsDrawMatch(squares, winner)).toBe(true);
+  }));
+
+  it('memorizeMove should increase moves array length to [1]', async(() => {
+    let moves: Move[] = [];
+    let player: Player = new Player(1, 'X', true, difficultyNone);
+    let square: Square = new Square(1, 'X');
+    moves = component.memorizeMove(moves, player, square, null);
+    expect(moves.length).toBe(1);
+  }));
+
+  it('isPositiveInteger should return [true]', async(() => {
+    expect(component.isPositiveInteger("5")).toBe(true);
+  }));
+
+  it('isPositiveInteger should return [false] for empty value', async(() => {
+    expect(component.isPositiveInteger("")).toBe(false);
+  }));
+
+  it('isPositiveInteger should return [false] for stringValue', async(() => {
+    expect(component.isPositiveInteger("stringValue")).toBe(false);
+  }));
+
+  it('isPositiveInteger should return [false] for 1.5', async(() => {
+    expect(component.isPositiveInteger("1.5")).toBe(false);
+  }));
+
+  it('isPositiveInteger should return [false] for 1,5', async(() => {
+    expect(component.isPositiveInteger("1,5")).toBe(false);
+  }));
+
+  it('isPositiveInteger should return [false] for -1', async(() => {
+    expect(component.isPositiveInteger("-1")).toBe(false);
+  }));
+
+  it('isAMultipleOf should return [false] for 7 is a multiple of 10', async(() => {
+    expect(component.isAMultipleOf(7, 10)).toBe(false);
+  }));
+
+  it('isAMultipleOf should return [false] for 10 is a multiple of 7', async(() => {
+    expect(component.isAMultipleOf(10, 7)).toBe(false);
+  }));
+
+  it('isAMultipleOf should return [false] for 100 is a multiple of 10000', async(() => {
+    expect(component.isAMultipleOf(100, 10000)).toBe(false);
+  }));
+
+  it('isAMultipleOf should return [true] for 10000 is a multiple of 100', async(() => {
+    expect(component.isAMultipleOf(10000, 100)).toBe(true);
+  }));
+  
+  it('determineIfIsValidTrainingGameCount should return [false]', async(() => {
+    expect(component.determineIfIsValidTrainingGameCount("", 1000000)).toBe(false);
+  }));
+  
+  it('determineIfIsValidTrainingGameCount should return [false]', async(() => {
+    expect(component.determineIfIsValidTrainingGameCount("1000001", 1000000)).toBe(false);
+  }));
+  
+  it('determineIfIsValidTrainingGameCount should return [true]', async(() => {
+    expect(component.determineIfIsValidTrainingGameCount("1", 1000000)).toBe(true);
+  }));
+  
+  it('determineIfIsValidTrainingGameCount should return [true]', async(() => {
+    expect(component.determineIfIsValidTrainingGameCount("1000000", 1000000)).toBe(true);
   }));
 });

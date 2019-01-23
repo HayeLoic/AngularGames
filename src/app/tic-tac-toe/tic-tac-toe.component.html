@@ -5,15 +5,23 @@
       <span *ngIf="player.isHuman">Joueur humain</span>
       <span *ngIf="!player.isHuman">Ordinateur en mode {{player.difficulty.name}}</span>
     </div>
-    <span *ngIf="currentPlayer && !winner && !isDrawMatch">
-      Prochain joueur : {{currentPlayer.symbol}}
-    </span>
-    <span *ngIf="winner">
-      Gagnant : {{winner.symbol}}
-    </span>
-    <span *ngIf="isDrawMatch">
-      Match nul !
-    </span>
+    <div *ngIf="isMachineLearningInformationsNeeded(players)" class="maching-learning-informations-wrapper">
+      <span>Apprentissage effectué sur {{getHistoryGamesMovesLength(historyGamesMoves)}} parties</span>
+      <button type="button" class="btn btn-primary btn-start-machine-learning" data-toggle="modal" data-target="#modalStartMachineLearning">
+        Envoyer l'ordinateur s'entraîner
+      </button>
+    </div>
+    <div class="move-information-wrapper">
+      <span *ngIf="currentPlayer && !winner && !isDrawMatch">
+        Prochain joueur : {{currentPlayer.symbol}}
+      </span>
+      <span *ngIf="winner">
+        Gagnant : {{winner.symbol}}
+      </span>
+      <span *ngIf="isDrawMatch">
+        Match nul !
+      </span>
+    </div>
   </div>
   <div class="container-fluid">
     <div *ngIf="squares" class="row row-squares">
@@ -30,7 +38,7 @@
 </div>
 <div class="modal fade" id="modalStartNewGame" tabindex="-1" role="dialog" aria-labelledby="modalStartNewGameLabel"
   aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalStartNewGameLabel">Nouvelle partie</h5>
@@ -57,8 +65,46 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="startNewGame()">Oui</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="startNewGameInUserInterface()">Oui</button>
       </div>
     </div>
+  </div>
+</div>
+<div class="modal fade" id="modalStartMachineLearning" tabindex="-1" role="dialog" aria-labelledby="modalStartMachineLearningLabel"
+  aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalStartMachineLearningLabel">Entraîner l'ordinateur</h5>
+        <button *ngIf="!isTrainingRunning" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <button *ngIf="isTrainingRunning" type="button" class="close disabled" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="!isTrainingRunning">
+          <p>Vous allez envoyer l'ordinateur faire une session d'entraînement.</p>
+          <p>Choisissez un nombre de parties que l'ordinateur devra faire contre lui-même.</p>
+          <input class="form-control" [ngClass]="{'is-invalid': !isValidTrainingGameCount}" type="text" [(ngModel)]="trainingGameCount" name="trainingGameCountInput">
+          <div class="invalid-feedback">
+            Le nombre de parties doit être un entier positif et inférieur à {{getMaximalTrainingGameCount()}}.
+          </div>
+        </div>
+        <div *ngIf="isTrainingRunning">
+          <div class="loader-info">{{getAdvancementLabel(trainingGameDoneCount, trainingGameCount)}}</div>
+          <div class="loader"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button *ngIf="!isTrainingRunning" type="button" class="btn btn-secondary" [ngClass]="{'disabled': isTrainingRunning}"
+          data-dismiss="modal">Fermer</button>
+        <button *ngIf="isTrainingRunning" type="button" class="btn btn-secondary disabled">Fermer</button>
+        <button *ngIf="!isTrainingRunning" type="submit" class="btn btn-primary" (click)="startTraining(trainingGameCount)">Commencer
+          l'entraînement</button>
+        <button *ngIf="isTrainingRunning" type="button" class="btn btn-primary disabled">Commencer l'entraînement</button>
+      </div>
+    </form>
   </div>
 </div>

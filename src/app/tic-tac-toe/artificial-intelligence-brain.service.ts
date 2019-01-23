@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Square } from './square';
 import { Player } from './player';
 import { DifficultyLevel } from '../difficulty/difficulty-level';
+import { Move } from './move';
+import { SquareStatistic } from './square-statistic';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ export class ArtificialIntelligenceBrainService {
 
   constructor() { }
 
-  chooseSquare(squares: Square[], enableSquares: Square[], difficultyLevel: DifficultyLevel, winningCombinations: Array<[number, number, number]>, currentPlayer: Player, players: Player[]): Square {
+  chooseSquare(squares: Square[], enableSquares: Square[], difficultyLevel: DifficultyLevel, winningCombinations: Array<[number, number, number]>, currentPlayer: Player, players: Player[], historyGamesMoves: Move[][], currentGameMoves: Move[]): Square {
     let squareToPlay: Square;
     switch (difficultyLevel) {
       case DifficultyLevel.Easy: {
@@ -25,8 +27,12 @@ export class ArtificialIntelligenceBrainService {
         squareToPlay = this.getSquareToPlayInHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players);
         break;
       }
-      default: {
+      case DifficultyLevel.VeryHard: {
         squareToPlay = this.getSquareToPlayInVeryHardDifficultyLevel(squares, enableSquares, winningCombinations, currentPlayer, players);
+        break;
+      }
+      default: {
+        squareToPlay = this.getSquareToPlayInMachineLearningDifficultyLevel(squares, enableSquares, historyGamesMoves, currentGameMoves);
         break;
       }
     }
@@ -81,6 +87,118 @@ export class ArtificialIntelligenceBrainService {
       squareIndexToPlay = this.getRandomSquareIndex(enableSquares);
       return enableSquares[squareIndexToPlay];
     }
+  }
+
+  getSquareToPlayInMachineLearningDifficultyLevel(squares: Square[], enableSquares: Square[], historyGamesMoves: Move[][], currentGameMoves: Move[]): Square {
+    let squareIndexToPlay: number = this.getMostProbableWinningSquareIndex(historyGamesMoves, currentGameMoves);
+    if (squareIndexToPlay != null) {
+      return squares[squareIndexToPlay];
+    }
+    else {
+      squareIndexToPlay = this.getRandomSquareIndex(enableSquares);
+      return enableSquares[squareIndexToPlay];
+    }
+  }
+
+  getSimilarGames(historyGamesMoves: Move[][], currentGameMoves: Move[]): Move[][] {
+    let similarGames: Move[][] = [];
+    for (let historyGameMoves of historyGamesMoves) {
+      let isSimilarGame: boolean = true;
+      for (let currentGameMove of currentGameMoves) {
+        let index: number = currentGameMoves.indexOf(currentGameMove);
+        if (historyGameMoves[index] == null
+          || currentGameMove.squareId != historyGameMoves[index].squareId
+          || currentGameMove.symbol != historyGameMoves[index].symbol) {
+          isSimilarGame = false;
+        }
+      }
+      if (isSimilarGame) {
+        similarGames.push(historyGameMoves);
+      }
+    }
+    return similarGames;
+  }
+
+  willBeWinningGame(moves: Move[], lastMoveDoneIndex: number): boolean {
+    if ((moves[lastMoveDoneIndex + 1] != null && moves[lastMoveDoneIndex + 1].isWinningMove)
+      || (moves[lastMoveDoneIndex + 3] != null && moves[lastMoveDoneIndex + 3].isWinningMove)
+      || (moves[lastMoveDoneIndex + 5] != null && moves[lastMoveDoneIndex + 5].isWinningMove)
+      || (moves[lastMoveDoneIndex + 7] != null && moves[lastMoveDoneIndex + 7].isWinningMove)
+      || (moves[lastMoveDoneIndex + 9] != null && moves[lastMoveDoneIndex + 9].isWinningMove)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  willBeLosingGame(moves: Move[], lastMoveDoneIndex: number): boolean {
+    if ((moves[lastMoveDoneIndex + 2] != null && moves[lastMoveDoneIndex + 2].isWinningMove)
+      || (moves[lastMoveDoneIndex + 4] != null && moves[lastMoveDoneIndex + 4].isWinningMove)
+      || (moves[lastMoveDoneIndex + 6] != null && moves[lastMoveDoneIndex + 6].isWinningMove)
+      || (moves[lastMoveDoneIndex + 8] != null && moves[lastMoveDoneIndex + 8].isWinningMove)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  CompareWinningGameCountAndLosingGameCount(squareStatistic1: SquareStatistic, squareStatistic2: SquareStatistic): number {
+    if (squareStatistic1.winningGameCount < squareStatistic2.winningGameCount) {
+      return 1;
+    } else if (squareStatistic1.winningGameCount > squareStatistic2.winningGameCount) {
+      return -1;
+    }
+
+    if (squareStatistic1.losingGameCount > squareStatistic2.losingGameCount) {
+      return 1;
+    } else if (squareStatistic1.losingGameCount < squareStatistic2.losingGameCount) {
+      return -1
+    } else {
+      return 0;
+    }
+  }
+
+  sortByWinningGameCountDescThenByLosingGameCountAsc(squareStatistics: SquareStatistic[]): SquareStatistic[] {
+    return squareStatistics.sort((squareStatistic1, squareStatistic2) => this.CompareWinningGameCountAndLosingGameCount(squareStatistic1, squareStatistic2));
+  }
+
+  getMostProbableWinningSquareId(similarGames: Move[][], currentGameMoves: Move[]): number {
+    let squareStatistics: SquareStatistic[] = [];
+    let lastMoveDoneIndex: number = currentGameMoves.length - 1;
+    for (let similarGameMoves of similarGames) {
+      let moveToRead: Move = similarGameMoves[lastMoveDoneIndex + 1];
+      let matchingSquareStatistics: SquareStatistic[] = squareStatistics.filter(squareStatistic => squareStatistic.squareId == moveToRead.squareId);
+      let willBeWinningGame: boolean = this.willBeWinningGame(similarGameMoves, lastMoveDoneIndex);
+      let willBeLosingGame: boolean = this.willBeLosingGame(similarGameMoves, lastMoveDoneIndex);
+      if (matchingSquareStatistics != null && matchingSquareStatistics[0] != null) {
+        matchingSquareStatistics[0].gameCount += 1;
+        if (willBeWinningGame) {
+          matchingSquareStatistics[0].winningGameCount += 1;
+        }
+        if (willBeLosingGame) {
+          matchingSquareStatistics[0].losingGameCount += 1;
+        }
+      }
+      else {
+        squareStatistics.push(new SquareStatistic(moveToRead.squareId, willBeWinningGame ? 1 : 0, willBeLosingGame ? 1 : 0, 1));
+      }
+    }
+    if (squareStatistics != null && squareStatistics.length > 0) {
+      squareStatistics = this.sortByWinningGameCountDescThenByLosingGameCountAsc(squareStatistics);
+      return squareStatistics[0].squareId;
+    }
+    return undefined;
+  }
+
+  getMostProbableWinningSquareIndex(historyGamesMoves: Move[][], currentGameMoves: Move[]): number {
+    let similarGames: Move[][] = this.getSimilarGames(historyGamesMoves, currentGameMoves);
+    let mostProbableWinningSquareId: number = this.getMostProbableWinningSquareId(similarGames, currentGameMoves);
+    if (mostProbableWinningSquareId != null) {
+      return mostProbableWinningSquareId - 1;
+    }
+    return undefined;
   }
 
   getRandomSquareIndex(squares: Square[]): number {
