@@ -6,6 +6,7 @@ import { Difficulty } from '../difficulty/difficulty';
 import { DifficultyService } from '../difficulty/difficulty.service';
 import { Move } from './move';
 import { DifficultyLevel } from '../difficulty/difficulty-level';
+import { MessageService } from '../messages/message.service';
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -46,7 +47,7 @@ export class TicTacToeComponent implements OnInit {
   isTrainingRunning: boolean = false;
   maximalTrainingGameCount: number = 1000000;
 
-  constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService) { }
+  constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService, private messageService: MessageService) { }
 
   ngOnInit() {
     this.difficulties = this.difficultyService.getDifficulties();
@@ -56,6 +57,7 @@ export class TicTacToeComponent implements OnInit {
   }
 
   startNewAutomaticGame() {
+    this.messageService.clear();
     this.squares = this.initializeSquares(this.maxSquareCount);
     this.currentPlayer = this.players[0];
     this.winner = null;
@@ -139,9 +141,16 @@ export class TicTacToeComponent implements OnInit {
   }
 
   makeMove(square: Square): void {
+    this.messageService.add("Joueur " + this.currentPlayer.symbol + " joue en " + square.id);
     square = this.updateSquareValue(square, this.currentPlayer);
     this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
+    if (this.winner) {
+      this.messageService.add("Joueur " + this.currentPlayer.symbol + " remporte la partie !");
+    }
     this.isDrawMatch = this.determineIsDrawMatch(this.squares, this.winner);
+    if (this.isDrawMatch) {
+      this.messageService.add("Match nul !");
+    }
     this.currentGameMoves = this.memorizeMove(this.currentGameMoves, this.currentPlayer, square, this.winner);
     this.currentPlayer = this.updateCurrentPlayer(this.currentPlayer, this.players);
     this.displayVictoryLine(this.winningCombinations, this.squares, this.winner);
@@ -244,7 +253,7 @@ export class TicTacToeComponent implements OnInit {
     return /^\d+$/.test(stringToCheck);
   }
 
-  determineIfIsValidTrainingGameCount(stringToCheck: string, maximalValueAuthorized:number): boolean {
+  determineIfIsValidTrainingGameCount(stringToCheck: string, maximalValueAuthorized: number): boolean {
     return this.isPositiveInteger(stringToCheck) && parseInt(stringToCheck) <= maximalValueAuthorized;
   }
 
