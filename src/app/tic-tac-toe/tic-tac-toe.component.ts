@@ -88,24 +88,30 @@ export class TicTacToeComponent implements OnInit {
 
   initializeSquares(maxSquareCount: number): Square[] {
     let squares: Square[] = [];
-    for (let squareCount = 1; squareCount <= maxSquareCount; squareCount++) {
-      squares.push(new Square(squareCount, ''));
-    }
+    squares.push(new Square(1, "", "A1"));
+    squares.push(new Square(2, "", "B1"));
+    squares.push(new Square(3, "", "C1"));
+    squares.push(new Square(4, "", "A2"));
+    squares.push(new Square(5, "", "B2"));
+    squares.push(new Square(6, "", "C2"));
+    squares.push(new Square(7, "", "A3"));
+    squares.push(new Square(8, "", "B3"));
+    squares.push(new Square(9, "", "C3"));
     return squares;
   }
 
   initializeDefaultPlayers(difficulty: Difficulty): Player[] {
     let players: Player[] = [];
-    players.push(new Player(1, 'X', true, difficulty));
-    players.push(new Player(2, 'O', false, difficulty));
+    players.push(new Player(1, "X", true, difficulty));
+    players.push(new Player(2, "O", false, difficulty));
     return players;
   }
 
   initializeAutomaticGamePlayers(): Player[] {
     let players: Player[] = [];
-    let difficulty: Difficulty = new Difficulty(0, 'Moyen', DifficultyLevel.Medium);
-    players.push(new Player(1, 'X', false, difficulty));
-    players.push(new Player(2, 'O', false, difficulty));
+    let difficulty: Difficulty = new Difficulty(0, "Moyen", DifficultyLevel.Medium);
+    players.push(new Player(1, "X", false, difficulty));
+    players.push(new Player(2, "O", false, difficulty));
     return players;
   }
 
@@ -141,7 +147,7 @@ export class TicTacToeComponent implements OnInit {
   }
 
   makeMove(square: Square): void {
-    this.messageService.add("Joueur " + this.currentPlayer.symbol + " joue en " + square.id);
+    this.messageService.add("Joueur " + this.currentPlayer.symbol + " joue en " + square.coordinates);
     square = this.updateSquareValue(square, this.currentPlayer);
     this.winner = this.determineWinner(this.winningCombinations, this.squares, this.currentPlayer);
     if (this.winner) {
@@ -237,7 +243,7 @@ export class TicTacToeComponent implements OnInit {
   }
 
   parseNumberToFrenchLocaleString(numberToParse: number): string {
-    return numberToParse.toLocaleString('fr-FR');
+    return numberToParse.toLocaleString("fr-FR");
   }
 
   getHistoryGamesMovesLength(historyGamesMoves: Move[][]): string {

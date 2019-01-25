@@ -61,43 +61,43 @@ describe('TicTacToeComponent', () => {
 
   it('getEnableSquares should return [0] square', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, 'X'));
-    squares.push(new Square(2, 'O'));
-    squares.push(new Square(3, 'X'));
-    squares.push(new Square(4, 'O'));
+    squares.push(new Square(1, 'X', 'A1'));
+    squares.push(new Square(2, 'O', 'B1'));
+    squares.push(new Square(3, 'X', 'C1'));
+    squares.push(new Square(4, 'O', 'A2'));
     let result = component.getEnableSquares(squares);
     expect(result.length).toBe(0);
   }));
 
   it('getEnableSquares should return [2] squares', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, 'X'));
-    squares.push(new Square(2, ''));
-    squares.push(new Square(3, ''));
-    squares.push(new Square(4, 'O'));
+    squares.push(new Square(1, 'X', 'A1'));
+    squares.push(new Square(2, '', 'B1'));
+    squares.push(new Square(3, '', 'C1'));
+    squares.push(new Square(4, 'O', 'A2'));
     let result = component.getEnableSquares(squares);
     expect(result.length).toBe(2);
   }));
 
   it('getEnableSquares should return a square with id = [2]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, 'X'));
-    squares.push(new Square(2, ''));
-    squares.push(new Square(3, 'X'));
-    squares.push(new Square(4, 'O'));
+    squares.push(new Square(1, 'X', 'A1'));
+    squares.push(new Square(2, '', 'B1'));
+    squares.push(new Square(3, 'X', 'C1'));
+    squares.push(new Square(4, 'O', 'A2'));
     let result = component.getEnableSquares(squares);
     expect(result[0].id).toBe(2);
   }));
 
   it('getEnableSquares should return squares with id = [2] and [4]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, 'X'));
-    squares.push(new Square(2, ''));
-    squares.push(new Square(3, 'O'));
-    squares.push(new Square(4, ''));
+    squares.push(new Square(1, 'X', 'A1'));
+    squares.push(new Square(2, '', 'B1'));
+    squares.push(new Square(3, 'O', 'C1'));
+    squares.push(new Square(4, '', 'A2'));
     let expectedResult: Square[] = [];
-    expectedResult.push(new Square(2, ''));
-    expectedResult.push(new Square(4, ''));
+    expectedResult.push(new Square(2, '', 'B1'));
+    expectedResult.push(new Square(4, '', 'A2'));
     let result = component.getEnableSquares(squares);
     expect(result).toEqual(expectedResult);
   }));
@@ -138,21 +138,21 @@ describe('TicTacToeComponent', () => {
   }));
 
   it('isPossibleToPlayForHuman should return [true]', async(() => {
-    let square: Square = new Square(1, '');
+    let square: Square = new Square(1, '', 'A1');
     let winner: Player;
     let currentPlayer: Player = new Player(1, 'X', true, difficultyNone);
     expect(component.isPossibleToPlayForHuman(square, winner, currentPlayer)).toBe(true);
   }));
 
   it('isPossibleToPlayForHuman should return [false]', async(() => {
-    let square: Square = new Square(1, 'X');
+    let square: Square = new Square(1, 'X', 'A1');
     let winner: Player;
     let currentPlayer: Player = new Player(1, 'X', true, difficultyNone);
     expect(component.isPossibleToPlayForHuman(square, winner, currentPlayer)).toBe(false);
   }));
 
   it('isPossibleToPlayForHuman should return [false]', async(() => {
-    let square: Square = new Square(1, '');
+    let square: Square = new Square(1, '', 'A1');
     let winner: Player = new Player(2, 'O', true, difficultyNone);
     let currentPlayer: Player = new Player(1, 'X', true, difficultyNone);
     expect(component.isPossibleToPlayForHuman(square, winner, currentPlayer)).toBe(false);
@@ -161,15 +161,15 @@ describe('TicTacToeComponent', () => {
   it('isVictoriousCombination should return [true]', async(() => {
     let winningCombination: [number, number, number] = [1, 2, 3];
     let squares: Square[] = [];
-    squares.push(new Square(1, 'X'));
-    squares.push(new Square(2, 'X'));
-    squares.push(new Square(3, 'X'));
-    squares.push(new Square(4, ''));
-    squares.push(new Square(5, ''));
-    squares.push(new Square(6, ''));
-    squares.push(new Square(7, ''));
-    squares.push(new Square(8, ''));
-    squares.push(new Square(9, ''));
+    squares.push(new Square(1, 'X', 'A1'));
+    squares.push(new Square(2, 'X', 'B1'));
+    squares.push(new Square(3, 'X', 'C1'));
+    squares.push(new Square(4, '', 'A2'));
+    squares.push(new Square(5, '', 'B2'));
+    squares.push(new Square(6, '', 'C2'));
+    squares.push(new Square(7, '', 'A3'));
+    squares.push(new Square(8, '', 'B3'));
+    squares.push(new Square(9, '', 'C3'));
     let player: Player = new Player(1, 'X', true, difficultyNone);
     expect(component.isVictoriousCombination(winningCombination, squares, player)).toBe(true);
   }));
@@ -177,45 +177,45 @@ describe('TicTacToeComponent', () => {
   it('isVictoriousCombination should return [false]', async(() => {
     let winningCombination: [number, number, number] = [1, 2, 3];
     let squares: Square[] = [];
-    squares.push(new Square(1, 'X'));
-    squares.push(new Square(2, 'O'));
-    squares.push(new Square(3, 'X'));
-    squares.push(new Square(4, ''));
-    squares.push(new Square(5, ''));
-    squares.push(new Square(6, ''));
-    squares.push(new Square(7, ''));
-    squares.push(new Square(8, ''));
-    squares.push(new Square(9, ''));
+    squares.push(new Square(1, 'X', 'A1'));
+    squares.push(new Square(2, 'O', 'B1'));
+    squares.push(new Square(3, 'X', 'C1'));
+    squares.push(new Square(4, '', 'A2'));
+    squares.push(new Square(5, '', 'B2'));
+    squares.push(new Square(6, '', 'C2'));
+    squares.push(new Square(7, '', 'A3'));
+    squares.push(new Square(8, '', 'B3'));
+    squares.push(new Square(9, '', 'C3'));
     let player: Player = new Player(1, 'X', true, difficultyNone);
     expect(component.isVictoriousCombination(winningCombination, squares, player)).toBe(false);
   }));
 
   it('determineWinner should return [null]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, ''));
-    squares.push(new Square(2, ''));
-    squares.push(new Square(3, ''));
-    squares.push(new Square(4, ''));
-    squares.push(new Square(5, ''));
-    squares.push(new Square(6, ''));
-    squares.push(new Square(7, ''));
-    squares.push(new Square(8, ''));
-    squares.push(new Square(9, ''));
+    squares.push(new Square(1, '', 'A1'));
+    squares.push(new Square(2, '', 'B1'));
+    squares.push(new Square(3, '', 'C1'));
+    squares.push(new Square(4, '', 'A2'));
+    squares.push(new Square(5, '', 'B2'));
+    squares.push(new Square(6, '', 'C2'));
+    squares.push(new Square(7, '', 'A3'));
+    squares.push(new Square(8, '', 'B3'));
+    squares.push(new Square(9, '', 'C3'));
     let player: Player = new Player(1, 'X', true, difficultyNone);
     expect(component.determineWinner(winningCombinations, squares, player)).toBe(null);
   }));
 
   it('determineWinner should return Player [1]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, 'X'));
-    squares.push(new Square(2, 'X'));
-    squares.push(new Square(3, 'X'));
-    squares.push(new Square(4, ''));
-    squares.push(new Square(5, ''));
-    squares.push(new Square(6, ''));
-    squares.push(new Square(7, ''));
-    squares.push(new Square(8, ''));
-    squares.push(new Square(9, ''));
+    squares.push(new Square(1, 'X', 'A1'));
+    squares.push(new Square(2, 'X', 'B1'));
+    squares.push(new Square(3, 'X', 'C1'));
+    squares.push(new Square(4, '', 'A2'));
+    squares.push(new Square(5, '', 'B2'));
+    squares.push(new Square(6, '', 'C2'));
+    squares.push(new Square(7, '', 'A3'));
+    squares.push(new Square(8, '', 'B3'));
+    squares.push(new Square(9, '', 'C3'));
     let player: Player = new Player(1, 'X', true, difficultyNone);
     let result = component.determineWinner(winningCombinations, squares, player);
     expect(result.id).toBe(1);
@@ -223,15 +223,15 @@ describe('TicTacToeComponent', () => {
 
   it('determineWinner should return Player [1]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, 'X'));
-    squares.push(new Square(2, ''));
-    squares.push(new Square(3, ''));
-    squares.push(new Square(4, ''));
-    squares.push(new Square(5, 'X'));
-    squares.push(new Square(6, ''));
-    squares.push(new Square(7, ''));
-    squares.push(new Square(8, ''));
-    squares.push(new Square(9, 'X'));
+    squares.push(new Square(1, 'X', 'A1'));
+    squares.push(new Square(2, '', 'B1'));
+    squares.push(new Square(3, '', 'C1'));
+    squares.push(new Square(4, '', 'A2'));
+    squares.push(new Square(5, 'X', 'B2'));
+    squares.push(new Square(6, '', 'C2'));
+    squares.push(new Square(7, '', 'A3'));
+    squares.push(new Square(8, '', 'B3'));
+    squares.push(new Square(9, 'X', 'C3'));
     let player: Player = new Player(1, 'X', true, difficultyNone);
     let result = component.determineWinner(winningCombinations, squares, player);
     expect(result.id).toBe(1);
@@ -239,15 +239,15 @@ describe('TicTacToeComponent', () => {
 
   it('determineWinner should return Player [1]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, ''));
-    squares.push(new Square(2, ''));
-    squares.push(new Square(3, ''));
-    squares.push(new Square(4, 'X'));
-    squares.push(new Square(5, 'X'));
-    squares.push(new Square(6, 'X'));
-    squares.push(new Square(7, ''));
-    squares.push(new Square(8, ''));
-    squares.push(new Square(9, ''));
+    squares.push(new Square(1, '', 'A1'));
+    squares.push(new Square(2, '', 'B1'));
+    squares.push(new Square(3, '', 'C1'));
+    squares.push(new Square(4, 'X', 'A2'));
+    squares.push(new Square(5, 'X', 'B2'));
+    squares.push(new Square(6, 'X', 'C2'));
+    squares.push(new Square(7, '', 'A3'));
+    squares.push(new Square(8, '', 'B3'));
+    squares.push(new Square(9, '', 'C3'));
     let player: Player = new Player(1, 'X', true, difficultyNone);
     let result = component.determineWinner(winningCombinations, squares, player);
     expect(result.id).toBe(1);
@@ -255,15 +255,15 @@ describe('TicTacToeComponent', () => {
 
   it('determineWinner should return Player [1]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, ''));
-    squares.push(new Square(2, ''));
-    squares.push(new Square(3, 'X'));
-    squares.push(new Square(4, ''));
-    squares.push(new Square(5, ''));
-    squares.push(new Square(6, 'X'));
-    squares.push(new Square(7, ''));
-    squares.push(new Square(8, ''));
-    squares.push(new Square(9, 'X'));
+    squares.push(new Square(1, '', 'A1'));
+    squares.push(new Square(2, '', 'B1'));
+    squares.push(new Square(3, 'X', 'C1'));
+    squares.push(new Square(4, '', 'A2'));
+    squares.push(new Square(5, '', 'B2'));
+    squares.push(new Square(6, 'X', 'C2'));
+    squares.push(new Square(7, '', 'A3'));
+    squares.push(new Square(8, '', 'B3'));
+    squares.push(new Square(9, 'X', 'C3'));
     let player: Player = new Player(1, 'X', true, difficultyNone);
     let result = component.determineWinner(winningCombinations, squares, player);
     expect(result.id).toBe(1);
@@ -271,45 +271,45 @@ describe('TicTacToeComponent', () => {
 
   it('determineIsDrawMatch should return [false]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, ''));
-    squares.push(new Square(2, ''));
-    squares.push(new Square(3, 'X'));
-    squares.push(new Square(4, ''));
-    squares.push(new Square(5, ''));
-    squares.push(new Square(6, 'X'));
-    squares.push(new Square(7, ''));
-    squares.push(new Square(8, ''));
-    squares.push(new Square(9, 'X'));
+    squares.push(new Square(1, '', 'A1'));
+    squares.push(new Square(2, '', 'B1'));
+    squares.push(new Square(3, 'X', 'C1'));
+    squares.push(new Square(4, '', 'A2'));
+    squares.push(new Square(5, '', 'B2'));
+    squares.push(new Square(6, 'X', 'C2'));
+    squares.push(new Square(7, '', 'A3'));
+    squares.push(new Square(8, '', 'B3'));
+    squares.push(new Square(9, 'X', 'C3'));
     let winner: Player = new Player(1, 'X', true, difficultyNone);
     expect(component.determineIsDrawMatch(squares, winner)).toBe(false);
   }));
 
   it('determineIsDrawMatch should return [false]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, ''));
-    squares.push(new Square(2, ''));
-    squares.push(new Square(3, 'X'));
-    squares.push(new Square(4, ''));
-    squares.push(new Square(5, ''));
-    squares.push(new Square(6, 'X'));
-    squares.push(new Square(7, ''));
-    squares.push(new Square(8, ''));
-    squares.push(new Square(9, 'X'));
+    squares.push(new Square(1, '', 'A1'));
+    squares.push(new Square(2, '', 'B1'));
+    squares.push(new Square(3, 'X', 'C1'));
+    squares.push(new Square(4, '', 'A2'));
+    squares.push(new Square(5, '', 'B2'));
+    squares.push(new Square(6, 'X', 'C2'));
+    squares.push(new Square(7, '', 'A3'));
+    squares.push(new Square(8, '', 'B3'));
+    squares.push(new Square(9, 'X', 'C3'));
     let winner: Player;
     expect(component.determineIsDrawMatch(squares, winner)).toBe(false);
   }));
 
   it('determineIsDrawMatch should return [true]', async(() => {
     let squares: Square[] = [];
-    squares.push(new Square(1, 'X'));
-    squares.push(new Square(2, 'O'));
-    squares.push(new Square(3, 'X'));
-    squares.push(new Square(4, 'O'));
-    squares.push(new Square(5, 'O'));
-    squares.push(new Square(6, 'X'));
-    squares.push(new Square(7, 'X'));
-    squares.push(new Square(8, 'X'));
-    squares.push(new Square(9, 'O'));
+    squares.push(new Square(1, 'X', 'A1'));
+    squares.push(new Square(2, 'O', 'B1'));
+    squares.push(new Square(3, 'X', 'C1'));
+    squares.push(new Square(4, 'O', 'A2'));
+    squares.push(new Square(5, 'O', 'B2'));
+    squares.push(new Square(6, 'X', 'C2'));
+    squares.push(new Square(7, 'X', 'A3'));
+    squares.push(new Square(8, 'X', 'B3'));
+    squares.push(new Square(9, 'O', 'C3'));
     let winner: Player;
     expect(component.determineIsDrawMatch(squares, winner)).toBe(true);
   }));
@@ -317,7 +317,7 @@ describe('TicTacToeComponent', () => {
   it('memorizeMove should increase moves array length to [1]', async(() => {
     let moves: Move[] = [];
     let player: Player = new Player(1, 'X', true, difficultyNone);
-    let square: Square = new Square(1, 'X');
+    let square: Square = new Square(1, 'X', 'A1');
     moves = component.memorizeMove(moves, player, square, null);
     expect(moves.length).toBe(1);
   }));
