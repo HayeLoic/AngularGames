@@ -23,10 +23,41 @@
       </span>
     </div>
   </div>
-  <div class="container-fluid">
-    <div *ngIf="squares" class="row row-squares">
-      <div *ngFor="let square of squares" (click)="squareClick(square)" class="col-4 square" [ngClass]="{'bg-success': square.isWinningSquare}">
-        {{square.value}}
+  <div class="container-fluid" *ngIf="squares">
+    <div class="row row-squares">
+      <div class="col-3 square-header"></div>
+      <div class="col-3 square-header">A</div>
+      <div class="col-3 square-header">B</div>
+      <div class="col-3 square-header">C</div>
+      <div class="col-3 square-header">1</div>
+      <div (click)="squareClick(squares[0])" class="col-3 square" [ngClass]="{'bg-success': squares[0].isWinningSquare}">
+        {{squares[0].value}}
+      </div>
+      <div (click)="squareClick(squares[1])" class="col-3 square" [ngClass]="{'bg-success': squares[1].isWinningSquare}">
+        {{squares[1].value}}
+      </div>
+      <div (click)="squareClick(squares[2])" class="col-3 square" [ngClass]="{'bg-success': squares[2].isWinningSquare}">
+        {{squares[2].value}}
+      </div>
+      <div class="col-3 square-header">2</div>
+      <div (click)="squareClick(squares[3])" class="col-3 square" [ngClass]="{'bg-success': squares[3].isWinningSquare}">
+        {{squares[3].value}}
+      </div>
+      <div (click)="squareClick(squares[4])" class="col-3 square" [ngClass]="{'bg-success': squares[4].isWinningSquare}">
+        {{squares[4].value}}
+      </div>
+      <div (click)="squareClick(squares[5])" class="col-3 square" [ngClass]="{'bg-success': squares[5].isWinningSquare}">
+        {{squares[5].value}}
+      </div>
+      <div class="col-3 square-header">3</div>
+      <div (click)="squareClick(squares[6])" class="col-3 square" [ngClass]="{'bg-success': squares[6].isWinningSquare}">
+        {{squares[6].value}}
+      </div>
+      <div (click)="squareClick(squares[7])" class="col-3 square" [ngClass]="{'bg-success': squares[7].isWinningSquare}">
+        {{squares[7].value}}
+      </div>
+      <div (click)="squareClick(squares[8])" class="col-3 square" [ngClass]="{'bg-success': squares[8].isWinningSquare}">
+        {{squares[8].value}}
       </div>
     </div>
   </div>
@@ -87,7 +118,8 @@
         <div *ngIf="!isTrainingRunning">
           <p>Vous allez envoyer l'ordinateur faire une session d'entraînement.</p>
           <p>Choisissez un nombre de parties que l'ordinateur devra faire contre lui-même.</p>
-          <input class="form-control" [ngClass]="{'is-invalid': !isValidTrainingGameCount}" type="text" [(ngModel)]="trainingGameCount" name="trainingGameCountInput">
+          <input class="form-control" [ngClass]="{'is-invalid': !isValidTrainingGameCount}" type="text" [(ngModel)]="trainingGameCount"
+            name="trainingGameCountInput">
           <div class="invalid-feedback">
             Le nombre de parties doit être un entier positif et inférieur à {{getMaximalTrainingGameCount()}}.
           </div>
