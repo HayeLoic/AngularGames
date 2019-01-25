@@ -12,6 +12,10 @@
     padding-top: 12px;
 }
 
+.square-wrapper {
+    padding: 0;
+}
+
 .square {
     height: 50px;
     border-style: solid;

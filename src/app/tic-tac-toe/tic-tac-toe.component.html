@@ -1,5 +1,5 @@
 <div>
-  <div class="informations-container">
+  <div *ngIf="players && players.length > 0" class="informations-container">
     <div *ngFor="let player of players">
       <span>Joueur {{player.symbol}} : </span>
       <span *ngIf="player.isHuman">Joueur humain</span>
@@ -30,9 +30,7 @@
       <div class="col-3 square-header">B</div>
       <div class="col-3 square-header">C</div>
       <div class="col-3 square-header">1</div>
-      <div (click)="squareClick(squares[0])" class="col-3 square" [ngClass]="{'bg-success': squares[0].isWinningSquare}">
-        {{squares[0].value}}
-      </div>
+      <!-- <app-square [square]="squares[0]" class="col-3 square-wrapper"></app-square>
       <div (click)="squareClick(squares[1])" class="col-3 square" [ngClass]="{'bg-success': squares[1].isWinningSquare}">
         {{squares[1].value}}
       </div>
@@ -58,7 +56,7 @@
       </div>
       <div (click)="squareClick(squares[8])" class="col-3 square" [ngClass]="{'bg-success': squares[8].isWinningSquare}">
         {{squares[8].value}}
-      </div>
+      </div> -->
     </div>
   </div>
   <div class="start-new-game-container">

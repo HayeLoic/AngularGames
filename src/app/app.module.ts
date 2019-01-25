@@ -7,12 +7,14 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { TicTacToeComponent } from './tic-tac-toe/tic-tac-toe.component';
 import { MessagesComponent } from './messages/messages.component';
+import { SquareComponent } from './tic-tac-toe/square/square.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TicTacToeComponent,
-    MessagesComponent
+    MessagesComponent,
+    SquareComponent
   ],
   imports: [
     BrowserModule,
