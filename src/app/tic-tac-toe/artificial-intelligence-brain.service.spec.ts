@@ -1098,4 +1098,33 @@ describe('ArtificialIntelligenceBrainService', () => {
     let hasNotPlayedAtSquareIdSix: boolean = mostProbableWinningSquareId != 6;
     expect(hasNotPlayedAtSquareIdSix).toBe(true);
   }));
+
+  it('getMostProbableWinningSquareId should have a result when next moveToRead is undefined', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let similarGames: Move[][] = [];
+    let moves: Move[] = [];
+    moves.push(new Move('O', 1, false));
+    let moves2: Move[] = [];
+    moves2.push(new Move('O', 1, false));
+    moves2.push(new Move('X', 2, false));
+    moves2.push(new Move('O', 5, false));
+    moves2.push(new Move('X', 4, false));
+    moves2.push(new Move('O', 9, true));
+    similarGames.push(moves);
+    similarGames.push(moves2);
+    let currentGameMoves: Move[] = [];
+    currentGameMoves.push(new Move('O', 1, false));
+    let mostProbableWinningSquareId: number = service.getMostProbableWinningSquareId(similarGames, currentGameMoves);
+    let hasResult: boolean = mostProbableWinningSquareId != null;
+    expect(hasResult).toBe(true);
+  }));
+
+  it('getMostProbableWinningSquareId should return [undefined] when next moveToRead is undefined', inject([ArtificialIntelligenceBrainService], (service: ArtificialIntelligenceBrainService) => {
+    let similarGames: Move[][] = [];
+    let moves: Move[] = [];
+    moves.push(new Move('O', 1, false));
+    similarGames.push(moves);
+    let currentGameMoves: Move[] = [];
+    currentGameMoves.push(new Move('O', 1, false));
+    expect(service.getMostProbableWinningSquareId(similarGames, currentGameMoves)).toBe(undefined);
+  }));
 });
