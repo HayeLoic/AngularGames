@@ -1,62 +1,46 @@
 <div>
-  <div *ngIf="players && players.length > 0" class="informations-container">
-    <div *ngFor="let player of players">
+  <div *ngIf="isTherePlayer()" class="informations-container">
+    <div *ngFor="let player of getPlayers()">
       <span>Joueur {{player.symbol}} : </span>
       <span *ngIf="player.isHuman">Joueur humain</span>
       <span *ngIf="!player.isHuman">Ordinateur en mode {{player.difficulty.name}}</span>
     </div>
-    <div *ngIf="isMachineLearningInformationsNeeded(players)" class="maching-learning-informations-wrapper">
-      <span>Apprentissage effectué sur {{getHistoryGamesMovesLength(historyGamesMoves)}} parties</span>
+    <div *ngIf="isMachineLearningInformationsNeeded()" class="maching-learning-informations-wrapper">
+      <span>Apprentissage effectué sur {{getHistoryGamesMovesLength()}} parties</span>
       <button type="button" class="btn btn-primary btn-start-machine-learning" data-toggle="modal" data-target="#modalStartMachineLearning">
         Envoyer l'ordinateur s'entraîner
       </button>
     </div>
     <div class="move-information-wrapper">
-      <span *ngIf="currentPlayer && !winner && !isDrawMatch">
-        Prochain joueur : {{currentPlayer.symbol}}
+      <span *ngIf="hasToShowNextPlayerLabel()">
+        Prochain joueur : {{getCurrentPlayerSymbol()}}
       </span>
-      <span *ngIf="winner">
-        Gagnant : {{winner.symbol}}
+      <span *ngIf="isThereWinner()">
+        Gagnant : {{getWinnerSymbol()}}
       </span>
-      <span *ngIf="isDrawMatch">
+      <span *ngIf="getIsDrawMatch()">
         Match nul !
       </span>
     </div>
   </div>
-  <div class="container-fluid" *ngIf="squares">
+  <div class="container-fluid" *ngIf="getSquares()">
     <div class="row row-squares">
       <div class="col-3 square-header"></div>
       <div class="col-3 square-header">A</div>
       <div class="col-3 square-header">B</div>
       <div class="col-3 square-header">C</div>
       <div class="col-3 square-header">1</div>
-      <!-- <app-square [square]="squares[0]" class="col-3 square-wrapper"></app-square>
-      <div (click)="squareClick(squares[1])" class="col-3 square" [ngClass]="{'bg-success': squares[1].isWinningSquare}">
-        {{squares[1].value}}
-      </div>
-      <div (click)="squareClick(squares[2])" class="col-3 square" [ngClass]="{'bg-success': squares[2].isWinningSquare}">
-        {{squares[2].value}}
-      </div>
+      <app-square [square]="getSquares()[0]" class="col-3 square-wrapper"></app-square>
+      <app-square [square]="getSquares()[1]" class="col-3 square-wrapper"></app-square>
+      <app-square [square]="getSquares()[2]" class="col-3 square-wrapper"></app-square>
       <div class="col-3 square-header">2</div>
-      <div (click)="squareClick(squares[3])" class="col-3 square" [ngClass]="{'bg-success': squares[3].isWinningSquare}">
-        {{squares[3].value}}
-      </div>
-      <div (click)="squareClick(squares[4])" class="col-3 square" [ngClass]="{'bg-success': squares[4].isWinningSquare}">
-        {{squares[4].value}}
-      </div>
-      <div (click)="squareClick(squares[5])" class="col-3 square" [ngClass]="{'bg-success': squares[5].isWinningSquare}">
-        {{squares[5].value}}
-      </div>
+      <app-square [square]="getSquares()[3]" class="col-3 square-wrapper"></app-square>
+      <app-square [square]="getSquares()[4]" class="col-3 square-wrapper"></app-square>
+      <app-square [square]="getSquares()[5]" class="col-3 square-wrapper"></app-square>
       <div class="col-3 square-header">3</div>
-      <div (click)="squareClick(squares[6])" class="col-3 square" [ngClass]="{'bg-success': squares[6].isWinningSquare}">
-        {{squares[6].value}}
-      </div>
-      <div (click)="squareClick(squares[7])" class="col-3 square" [ngClass]="{'bg-success': squares[7].isWinningSquare}">
-        {{squares[7].value}}
-      </div>
-      <div (click)="squareClick(squares[8])" class="col-3 square" [ngClass]="{'bg-success': squares[8].isWinningSquare}">
-        {{squares[8].value}}
-      </div> -->
+      <app-square [square]="getSquares()[6]" class="col-3 square-wrapper"></app-square>
+      <app-square [square]="getSquares()[7]" class="col-3 square-wrapper"></app-square>
+      <app-square [square]="getSquares()[8]" class="col-3 square-wrapper"></app-square>
     </div>
   </div>
   <div class="start-new-game-container">
@@ -79,14 +63,14 @@
         <p>Voulez-vous commencer une nouvelle partie ?</p>
         <p>La partie en cours sera perdue.</p>
         <div class="row">
-          <div *ngFor="let nextGamePlayer of nextGamePlayers;let i = index;" class="col-6">
+          <div *ngFor="let nextGamePlayer of getNextGamePlayers();let i = index;" class="col-6">
             <div class="is-human-switch-wrapper">
               <ui-switch [(ngModel)]="nextGamePlayer.isHuman" checkedLabel="{{switchModel.checkedLabel}}"
                 uncheckedLabel="{{switchModel.uncheckedLabel}}" size="{{switchModel.size}}" defaultBgColor="{{switchModel.defaultBgColor}}"></ui-switch>
             </div>
             <div [hidden]="nextGamePlayer.isHuman">
               <select class="form-control select-difficulty" [(ngModel)]="nextGamePlayer.difficulty">
-                <option [ngValue]="difficulty" *ngFor="let difficulty of difficulties"> {{difficulty.name}}</option>
+                <option [ngValue]="difficulty" *ngFor="let difficulty of getDifficulties()"> {{difficulty.name}}</option>
               </select>
             </div>
           </div>
@@ -105,35 +89,35 @@
     <form class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalStartMachineLearningLabel">Entraîner l'ordinateur</h5>
-        <button *ngIf="!isTrainingRunning" type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button *ngIf="!getIsTrainingRunning()" type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <button *ngIf="isTrainingRunning" type="button" class="close disabled" aria-label="Close">
+        <button *ngIf="getIsTrainingRunning()" type="button" class="close disabled" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div *ngIf="!isTrainingRunning">
+        <div *ngIf="!getIsTrainingRunning()">
           <p>Vous allez envoyer l'ordinateur faire une session d'entraînement.</p>
           <p>Choisissez un nombre de parties que l'ordinateur devra faire contre lui-même.</p>
-          <input class="form-control" [ngClass]="{'is-invalid': !isValidTrainingGameCount}" type="text" [(ngModel)]="trainingGameCount"
+          <input class="form-control" [ngClass]="{'is-invalid': !getIsValidTrainingGameCount}" type="text" [(ngModel)]="trainingGameCount"
             name="trainingGameCountInput">
           <div class="invalid-feedback">
             Le nombre de parties doit être un entier positif et inférieur à {{getMaximalTrainingGameCount()}}.
           </div>
         </div>
-        <div *ngIf="isTrainingRunning">
-          <div class="loader-info">{{getAdvancementLabel(trainingGameDoneCount, trainingGameCount)}}</div>
+        <div *ngIf="getIsTrainingRunning()">
+          <div class="loader-info">{{getAdvancementLabel(getTrainingGameDoneCount(), trainingGameCount)}}</div>
           <div class="loader"></div>
         </div>
       </div>
       <div class="modal-footer">
-        <button *ngIf="!isTrainingRunning" type="button" class="btn btn-secondary" [ngClass]="{'disabled': isTrainingRunning}"
+        <button *ngIf="!getIsTrainingRunning()" type="button" class="btn btn-secondary" [ngClass]="{'disabled': getIsTrainingRunning()}"
           data-dismiss="modal">Fermer</button>
-        <button *ngIf="isTrainingRunning" type="button" class="btn btn-secondary disabled">Fermer</button>
-        <button *ngIf="!isTrainingRunning" type="submit" class="btn btn-primary" (click)="startTraining(trainingGameCount)">Commencer
+        <button *ngIf="getIsTrainingRunning()" type="button" class="btn btn-secondary disabled">Fermer</button>
+        <button *ngIf="!getIsTrainingRunning()" type="submit" class="btn btn-primary" (click)="startTraining(trainingGameCount)">Commencer
           l'entraînement</button>
-        <button *ngIf="isTrainingRunning" type="button" class="btn btn-primary disabled">Commencer l'entraînement</button>
+        <button *ngIf="getIsTrainingRunning()" type="button" class="btn btn-primary disabled">Commencer l'entraînement</button>
       </div>
     </form>
   </div>

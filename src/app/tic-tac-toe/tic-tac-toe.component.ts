@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TicTacToeService } from './tic-tac-toe.service';
 import { Player } from './player';
-import { Move } from './move';
 import { Square } from './square';
 import { Difficulty } from '../difficulty/difficulty';
 
@@ -19,42 +18,18 @@ export class TicTacToeComponent implements OnInit {
   };
   trainingGameCount: string = "10";
 
-  squares: Square[] = [];
-  players: Player[] = [];
-  nextGamePlayers: Player[] = [];
-  currentPlayer: Player;
-  winner: Player;
-  isDrawMatch: boolean;
-  winningCombinations: Array<[number, number, number]> = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-    [1, 4, 7],
-    [2, 5, 8],
-    [3, 6, 9],
-    [1, 5, 9],
-    [3, 5, 7]
-  ];
-  tryToMoveIntervalInMilliseconds: number = 2000;
-  difficulties: Difficulty[] = [];
-  currentGameMoves: Move[] = [];
-  historyGamesMoves: Move[][] = [];
-  trainingGameDoneCount: number = 0;
-  isValidTrainingGameCount: boolean = true;
-  isTrainingRunning: boolean = false;
-  maximalTrainingGameCount: number = 1000000;
-
   constructor(private ticTacToeService: TicTacToeService) { }
 
   ngOnInit() {
+    this.ticTacToeService.initialize();
   }
 
-  isMachineLearningInformationsNeeded(players: Player[]): boolean {
-    return this.isMachineLearningInformationsNeeded(players);
+  isMachineLearningInformationsNeeded(): boolean {
+    return this.ticTacToeService.isMachineLearningInformationsNeeded();
   }
 
-  getHistoryGamesMovesLength(historyGamesMoves: Move[][]): string {
-    return this.getHistoryGamesMovesLength(historyGamesMoves);
+  getHistoryGamesMovesLength(): string {
+    return this.ticTacToeService.getHistoryGamesMovesLength(this.ticTacToeService.historyGamesMoves);
   }
 
   startNewGameInUserInterface(): void {
@@ -71,5 +46,57 @@ export class TicTacToeComponent implements OnInit {
 
   async startTraining(trainingGameCount: string): Promise<void> {
     this.ticTacToeService.startTraining(trainingGameCount);
+  }
+
+  getIsTrainingRunning(): boolean {
+    return this.ticTacToeService.isTrainingRunning;
+  }
+
+  getIsValidTrainingGameCount(): boolean {
+    return this.ticTacToeService.isValidTrainingGameCount;
+  }
+
+  getTrainingGameDoneCount(): number {
+    return this.ticTacToeService.trainingGameDoneCount;
+  }
+
+  getIsDrawMatch(): boolean {
+    return this.ticTacToeService.isDrawMatch;
+  }
+
+  getDifficulties(): Difficulty[] {
+    return this.ticTacToeService.difficulties;
+  }
+
+  hasToShowNextPlayerLabel(): boolean {
+    return this.ticTacToeService.hasToShowNextPlayerLabel();
+  }
+
+  isThereWinner(): boolean {
+    return this.ticTacToeService.isThereWinner();
+  }
+
+  getWinnerSymbol(): string {
+    return this.ticTacToeService.getWinnerSymbol();
+  }
+
+  getCurrentPlayerSymbol(): string {
+    return this.ticTacToeService.getCurrentPlayerSymbol();
+  }
+
+  getNextGamePlayers(): Player[] {
+    return this.ticTacToeService.nextGamePlayers;
+  }
+
+  isTherePlayer(): boolean {
+    return this.ticTacToeService.isTherePlayer();
+  }
+
+  getPlayers(): Player[] {
+    return this.ticTacToeService.players;
+  }
+
+  getSquares(): Square[] {
+    return this.ticTacToeService.squares;
   }
 }

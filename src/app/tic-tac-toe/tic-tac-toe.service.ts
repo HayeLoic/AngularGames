@@ -39,7 +39,7 @@ export class TicTacToeService {
 
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService, private messageService: MessageService) { }
 
-  ngOnInit() {
+  initialize(): void {
     this.difficulties = this.difficultyService.getDifficulties();
     let defaultDifficulty: Difficulty = this.getDefaultDifficulty(this.difficulties);
     this.nextGamePlayers = this.initializeDefaultPlayers(defaultDifficulty);
@@ -222,9 +222,9 @@ export class TicTacToeService {
     }
   }
 
-  isMachineLearningInformationsNeeded(players: Player[]): boolean {
+  isMachineLearningInformationsNeeded(): boolean {
     let isMachineLearningInformationsNeeded: boolean = false;
-    for (let player of players) {
+    for (let player of this.players) {
       if (!player.isHuman && player.difficulty.difficultyLevel == DifficultyLevel.MachingLearning) {
         isMachineLearningInformationsNeeded = true;
       }
@@ -311,5 +311,40 @@ export class TicTacToeService {
 
   getMaximalTrainingGameCount(): string {
     return this.parseNumberToFrenchLocaleString(this.maximalTrainingGameCount);
+  }
+
+  hasToShowNextPlayerLabel(): boolean {
+    return this.currentPlayer && !this.winner && !this.isDrawMatch;
+  }
+
+  isThereWinner(): boolean {
+    if (this.winner) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  getWinnerSymbol(): string {
+    if (this.winner) {
+      return this.winner.symbol;
+    }
+    else {
+      return "";
+    }
+  }
+
+  getCurrentPlayerSymbol(): string {
+    if (this.currentPlayer) {
+      return this.currentPlayer.symbol;
+    }
+    else {
+      return "";
+    }
+  }
+
+  isTherePlayer(): boolean {
+    return this.players && this.players.length > 0;
   }
 }
