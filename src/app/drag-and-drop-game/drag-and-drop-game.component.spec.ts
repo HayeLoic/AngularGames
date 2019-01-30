@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { FormsModule } from '@angular/forms';
 import { DragAndDropGameComponent } from './drag-and-drop-game.component';
+import { MatSelectModule } from '@angular/material/select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('DragAndDropGameComponent', () => {
   let component: DragAndDropGameComponent;
@@ -8,7 +10,8 @@ describe('DragAndDropGameComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DragAndDropGameComponent ]
+      declarations: [ DragAndDropGameComponent ],
+      imports: [FormsModule, MatSelectModule, BrowserAnimationsModule]
     })
     .compileComponents();
   }));
@@ -23,3 +26,4 @@ describe('DragAndDropGameComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+ 
