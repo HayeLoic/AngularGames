@@ -1,0 +1,8 @@
+.drag-drop-select {
+    margin-left: 10px;
+}
+
+.drag-drop-card {
+    width: 250px;
+    cursor: move;
+}

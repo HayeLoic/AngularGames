@@ -1,3 +1,27 @@
-<p cdkDrag>
-  drag and drop me !
-</p>
+<mat-form-field class="drag-drop-select">
+  <mat-select placeholder="Type de drag and drop" [(ngModel)]="selectedDragAndDropType">
+    <mat-option *ngFor="let dragAndDropType of dragAndDropTypes" [value]="dragAndDropType">
+      {{dragAndDropType.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<div *ngIf="isSelectedDragAndDropType('basic')" class="card drag-drop-card" cdkDrag>
+  <div class="card-body">
+    <h5 class="card-title">Basique</h5>
+    <p class="card-text">Exemple basique de Drag&Drop</p>
+  </div>
+</div>
+<div *ngIf="isSelectedDragAndDropType('v-h')">
+  <div class="card drag-drop-card" cdkDragLockAxis="y" cdkDrag>
+    <div class="card-body">
+      <h5 class="card-title">Vertical - horizontal</h5>
+      <p class="card-text">Drag vertical uniquement</p>
+    </div>
+  </div>
+  <div class="card drag-drop-card" cdkDragLockAxis="x" cdkDrag>
+    <div class="card-body">
+      <h5 class="card-title">Vertical - horizontal</h5>
+      <p class="card-text">Drag horizontal uniquement</p>
+    </div>
+  </div>
+</div>

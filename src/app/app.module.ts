@@ -11,6 +11,7 @@ import { TicTacToeComponent } from './tic-tac-toe/tic-tac-toe.component';
 import { MessagesComponent } from './messages/messages.component';
 import { SquareComponent } from './tic-tac-toe/square/square.component';
 import { DragAndDropGameComponent } from './drag-and-drop-game/drag-and-drop-game.component';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { DragAndDropGameComponent } from './drag-and-drop-game/drag-and-drop-gam
     FormsModule,
     UiSwitchModule,
     BrowserAnimationsModule,
-    DragDropModule
+    DragDropModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]
