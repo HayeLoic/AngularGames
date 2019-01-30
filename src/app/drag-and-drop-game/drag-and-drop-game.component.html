@@ -5,23 +5,87 @@
     </mat-option>
   </mat-select>
 </mat-form-field>
-<div *ngIf="isSelectedDragAndDropType('basic')" class="card drag-drop-card" cdkDrag>
+<div *ngIf="isSelectedDragAndDropType('basic')" class="card custom-card drag-drop-element" cdkDrag>
   <div class="card-body">
     <h5 class="card-title">Basique</h5>
     <p class="card-text">Exemple basique de Drag&Drop</p>
   </div>
 </div>
 <div *ngIf="isSelectedDragAndDropType('v-h')">
-  <div class="card drag-drop-card" cdkDragLockAxis="y" cdkDrag>
+  <div class="card custom-card drag-drop-element" cdkDragLockAxis="y" cdkDrag>
     <div class="card-body">
       <h5 class="card-title">Vertical - horizontal</h5>
       <p class="card-text">Drag vertical uniquement</p>
     </div>
   </div>
-  <div class="card drag-drop-card" cdkDragLockAxis="x" cdkDrag>
+  <div class="card custom-card drag-drop-element" cdkDragLockAxis="x" cdkDrag>
     <div class="card-body">
       <h5 class="card-title">Vertical - horizontal</h5>
       <p class="card-text">Drag horizontal uniquement</p>
+    </div>
+  </div>
+</div>
+<div *ngIf="isSelectedDragAndDropType('list')" cdkDropList (cdkDropListDropped)="listDrop($event)">
+  <div class="card custom-card drag-drop-element" *ngFor="let todo of todos" cdkDrag>
+    <div class="card-body">
+      <p class="card-text">{{todo}}</p>
+    </div>
+  </div>
+</div>
+<div *ngIf="isSelectedDragAndDropType('modal')">
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDraggable">
+    Ouvrir la modale
+  </button>
+  <div class="modal fade" id="modalDraggable" tabindex="-1" role="dialog" aria-labelledby="modalDraggableLabel"
+    aria-hidden="true">
+    <div class="modal-dialog drag-drop-element" role="document" cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+      <form class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalDraggableLabel">Modale déplaçable</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Vous pouvez déplacer cette fenêtre</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div *ngIf="isSelectedDragAndDropType('handle')" class="card custom-card" cdkDrag>
+  <div class="card-body">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span class="drag-drop-element" cdkDragHandle><i class="fas fa-arrows-alt"></i></span>
+    </button>
+    <h5 class="card-title"> Déplacement par la poignée </h5>
+    <p class="card-text">Exemple d'élément que l'on ne peut déplacer qu'avec l'icône de "poignée"</p>
+  </div>
+</div>
+<div *ngIf="isSelectedDragAndDropType('connected')">
+  <div class="list-wrapper">
+    <h2>A faire</h2>
+    <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="todos" [cdkDropListConnectedTo]="[doneList]" class="example-list"
+      (cdkDropListDropped)="connectedDrop($event)">
+      <div class="card custom-card drag-drop-element" *ngFor="let todo of todos" cdkDrag>
+        <div class="card-body">
+          <p class="card-text">{{todo}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="list-wrapper">
+    <h2>Fait</h2>
+    <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="dones" [cdkDropListConnectedTo]="[todoList]" class="example-list"
+      (cdkDropListDropped)="connectedDrop($event)">
+      <div class="card custom-card drag-drop-element" *ngFor="let done of dones" cdkDrag>
+        <div class="card-body">
+          <p class="card-text">{{done}}</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

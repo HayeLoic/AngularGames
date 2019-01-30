@@ -1,8 +1,19 @@
 .drag-drop-select {
     margin-left: 10px;
+    margin-bottom: 30px;
+    width: 280px;
 }
 
-.drag-drop-card {
+.custom-card {
     width: 250px;
+}
+
+.drag-drop-element {
     cursor: move;
 }
+
+.list-wrapper {
+    width: 300px;
+    display: inline-block;
+    vertical-align: top;
+  }
