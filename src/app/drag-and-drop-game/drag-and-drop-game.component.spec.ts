@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { DragAndDropGameComponent } from './drag-and-drop-game.component';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 describe('DragAndDropGameComponent', () => {
   let component: DragAndDropGameComponent;
@@ -11,7 +12,7 @@ describe('DragAndDropGameComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DragAndDropGameComponent ],
-      imports: [FormsModule, MatSelectModule, BrowserAnimationsModule]
+      imports: [FormsModule, MatSelectModule, BrowserAnimationsModule, DragDropModule]
     })
     .compileComponents();
   }));
