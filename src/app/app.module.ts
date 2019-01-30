@@ -6,11 +6,15 @@ import { UiSwitchModule } from 'ngx-ui-switch';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { TicTacToeComponent } from './tic-tac-toe/tic-tac-toe.component';
+import { MessagesComponent } from './messages/messages.component';
+import { SquareComponent } from './tic-tac-toe/square/square.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TicTacToeComponent
+    TicTacToeComponent,
+    MessagesComponent,
+    SquareComponent
   ],
   imports: [
     BrowserModule,

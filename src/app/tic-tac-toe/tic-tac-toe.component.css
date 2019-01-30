@@ -3,7 +3,17 @@
 }
 
 .row-squares {
-    width: 150px;
+    width: 200px;
+}
+
+.square-header {
+    font-weight: bold;
+    text-align: center;
+    padding-top: 12px;
+}
+
+.square-wrapper {
+    padding: 0;
 }
 
 .square {

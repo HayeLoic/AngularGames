@@ -169,20 +169,22 @@ export class ArtificialIntelligenceBrainService {
     let lastMoveDoneIndex: number = currentGameMoves.length - 1;
     for (let similarGameMoves of similarGames) {
       let moveToRead: Move = similarGameMoves[lastMoveDoneIndex + 1];
-      let matchingSquareStatistics: SquareStatistic[] = squareStatistics.filter(squareStatistic => squareStatistic.squareId == moveToRead.squareId);
-      let willBeWinningGame: boolean = this.willBeWinningGame(similarGameMoves, lastMoveDoneIndex);
-      let willBeLosingGame: boolean = this.willBeLosingGame(similarGameMoves, lastMoveDoneIndex);
-      if (matchingSquareStatistics != null && matchingSquareStatistics[0] != null) {
-        matchingSquareStatistics[0].gameCount += 1;
-        if (willBeWinningGame) {
-          matchingSquareStatistics[0].winningGameCount += 1;
+      if (moveToRead) {
+        let matchingSquareStatistics: SquareStatistic[] = squareStatistics.filter(squareStatistic => squareStatistic.squareId == moveToRead.squareId);
+        let willBeWinningGame: boolean = this.willBeWinningGame(similarGameMoves, lastMoveDoneIndex);
+        let willBeLosingGame: boolean = this.willBeLosingGame(similarGameMoves, lastMoveDoneIndex);
+        if (matchingSquareStatistics != null && matchingSquareStatistics[0] != null) {
+          matchingSquareStatistics[0].gameCount += 1;
+          if (willBeWinningGame) {
+            matchingSquareStatistics[0].winningGameCount += 1;
+          }
+          if (willBeLosingGame) {
+            matchingSquareStatistics[0].losingGameCount += 1;
+          }
         }
-        if (willBeLosingGame) {
-          matchingSquareStatistics[0].losingGameCount += 1;
+        else {
+          squareStatistics.push(new SquareStatistic(moveToRead.squareId, willBeWinningGame ? 1 : 0, willBeLosingGame ? 1 : 0, 1));
         }
-      }
-      else {
-        squareStatistics.push(new SquareStatistic(moveToRead.squareId, willBeWinningGame ? 1 : 0, willBeLosingGame ? 1 : 0, 1));
       }
     }
     if (squareStatistics != null && squareStatistics.length > 0) {
