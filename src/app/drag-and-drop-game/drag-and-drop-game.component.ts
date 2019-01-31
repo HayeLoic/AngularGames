@@ -6,6 +6,8 @@ import { PuzzlePortion } from './puzzle/puzzle-portion';
 import { PuzzlePortionService } from './puzzle/puzzle-portion.service';
 import { PuzzleModel } from './puzzle/puzzle-model';
 import { PuzzleModelService } from './puzzle/puzzle-model.service';
+import { Difficulty } from '../difficulty/difficulty';
+import { DifficultyService } from '../difficulty/difficulty.service';
 
 @Component({
   selector: 'app-drag-and-drop-game',
@@ -26,17 +28,16 @@ export class DragAndDropGameComponent implements OnInit {
   dones: string[] = [
     'Faire les courses'];
   puzzleModel: PuzzleModel;
+  difficulties: Difficulty[];
+  selectedDifficulty: Difficulty;
 
-  constructor(private dragAndDropTypeService: DragAndDropTypeService, private puzzlePortionService: PuzzlePortionService, private puzzleModelService: PuzzleModelService) { }
+  constructor(private dragAndDropTypeService: DragAndDropTypeService, private puzzlePortionService: PuzzlePortionService, private puzzleModelService: PuzzleModelService, private difficultyService: DifficultyService) { }
 
   ngOnInit() {
-    this.puzzleModel = this.puzzleModelService.getDefaultPuzzleModel();
-    this.puzzlePortions = this.puzzlePortionService.getPuzzlePortions(
-      this.puzzleModel.width,
-      this.puzzleModel.height,
-      this.puzzleModel.portionCountX,
-      this.puzzleModel.portionCountY);
     this.dragAndDropTypes = this.dragAndDropTypeService.getDragAndDropTypes();
+    this.difficulties = this.difficultyService.getDragAndDropDifficulties();
+    this.selectedDifficulty = this.difficulties[0];
+    this.startNewPuzzleGame(this.selectedDifficulty);
   }
 
   isSelectedDragAndDropType(code: string): boolean {
@@ -61,7 +62,7 @@ export class DragAndDropGameComponent implements OnInit {
         event.currentIndex);
     }
   }
-  
+
   setPuzzlePortionStyle(puzzlePortion: PuzzlePortion) {
     let styles = {
       'background-image': 'url(/assets/img/dessin-de-chien.jpg)',
@@ -70,5 +71,15 @@ export class DragAndDropGameComponent implements OnInit {
       'height': this.puzzleModelService.getPortionHeight(this.puzzleModel) + 'px'
     };
     return styles;
+  }
+
+  startNewPuzzleGame(difficulty: Difficulty): void {
+    this.puzzleModel = this.puzzleModelService.getDefaultPuzzleModel(difficulty);
+    this.puzzlePortions = this.puzzlePortionService.getPuzzlePortions(
+      this.puzzleModel.width,
+      this.puzzleModel.height,
+      this.puzzleModel.portionCountX,
+      this.puzzleModel.portionCountY);
+    this.puzzlePortions = this.puzzlePortionService.shuffle(this.puzzlePortions);
   }
 }

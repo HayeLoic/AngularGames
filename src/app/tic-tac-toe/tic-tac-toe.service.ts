@@ -40,7 +40,7 @@ export class TicTacToeService {
   constructor(private artificialIntelligenceBrainService: ArtificialIntelligenceBrainService, private difficultyService: DifficultyService, private messageService: MessageService) { }
 
   initialize(): void {
-    this.difficulties = this.difficultyService.getDifficulties();
+    this.difficulties = this.difficultyService.getTicTacToeDifficulties();
     let defaultDifficulty: Difficulty = this.getDefaultDifficulty(this.difficulties);
     this.nextGamePlayers = this.initializeDefaultPlayers(defaultDifficulty);
     this.startNewGameInUserInterface();

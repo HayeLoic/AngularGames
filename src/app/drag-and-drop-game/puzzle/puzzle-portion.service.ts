@@ -21,4 +21,12 @@ export class PuzzlePortionService {
     }
     return puzzlePortions;
   }
+
+  shuffle(puzzlePortions: PuzzlePortion[]): PuzzlePortion[] {
+    for (let index = puzzlePortions.length - 1; index > 0; index--) {
+      const randomNumber: number = Math.floor(Math.random() * (index + 1));
+      [puzzlePortions[index], puzzlePortions[randomNumber]] = [puzzlePortions[randomNumber], puzzlePortions[index]];
+    }
+    return puzzlePortions;
+  }
 }
