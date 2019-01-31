@@ -61,6 +61,7 @@ export class DragAndDropGameComponent implements OnInit {
         event.currentIndex);
     }
   }
+  
   setPuzzlePortionStyle(puzzlePortion: PuzzlePortion) {
     let styles = {
       'background-image': 'url(/assets/img/dessin-de-chien.jpg)',
