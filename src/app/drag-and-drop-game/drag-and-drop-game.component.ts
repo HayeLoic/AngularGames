@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { DragAndDropType } from './drag-and-drop-type';
-import { DragAndDropTypeService } from './drag-and-drop-type.service';
+import { DragAndDropType } from './drag-and-drop-type/drag-and-drop-type';
+import { DragAndDropTypeService } from './drag-and-drop-type/drag-and-drop-type.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { PuzzlePortion } from './puzzle/puzzle-portion';
+import { PuzzlePortionService } from './puzzle/puzzle-portion.service';
+import { PuzzleModel } from './puzzle/puzzle-model';
+import { PuzzleModelService } from './puzzle/puzzle-model.service';
 
 @Component({
   selector: 'app-drag-and-drop-game',
@@ -9,6 +13,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
   styleUrls: ['./drag-and-drop-game.component.css']
 })
 export class DragAndDropGameComponent implements OnInit {
+  puzzlePortions: PuzzlePortion[] = [];
   dragAndDropTypes: DragAndDropType[] = [];
   selectedDragAndDropType: DragAndDropType;
   todos: string[] = [
@@ -19,11 +24,18 @@ export class DragAndDropGameComponent implements OnInit {
     'Faire le repassage',
     'Faire la vaisselle'];
   dones: string[] = [
-    'Faire les courses']
+    'Faire les courses'];
+  puzzleModel: PuzzleModel;
 
-  constructor(private dragAndDropTypeService: DragAndDropTypeService) { }
+  constructor(private dragAndDropTypeService: DragAndDropTypeService, private puzzlePortionService: PuzzlePortionService, private puzzleModelService: PuzzleModelService) { }
 
   ngOnInit() {
+    this.puzzleModel = this.puzzleModelService.getDefaultPuzzleModel();
+    this.puzzlePortions = this.puzzlePortionService.getPuzzlePortions(
+      this.puzzleModel.width,
+      this.puzzleModel.height,
+      this.puzzleModel.portionCountX,
+      this.puzzleModel.portionCountY);
     this.dragAndDropTypes = this.dragAndDropTypeService.getDragAndDropTypes();
   }
 
@@ -48,5 +60,14 @@ export class DragAndDropGameComponent implements OnInit {
         event.previousIndex,
         event.currentIndex);
     }
+  }
+  setPuzzlePortionStyle(puzzlePortion: PuzzlePortion) {
+    let styles = {
+      'background-image': 'url(/assets/img/dessin-de-chien.jpg)',
+      'background-position': '-' + puzzlePortion.positionX + 'px  -' + puzzlePortion.positionY + 'px',
+      'width': this.puzzleModelService.getPortionWith(this.puzzleModel) + 'px',
+      'height': this.puzzleModelService.getPortionHeight(this.puzzleModel) + 'px'
+    };
+    return styles;
   }
 }

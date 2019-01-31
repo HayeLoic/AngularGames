@@ -16,6 +16,7 @@ export class DragAndDropTypeService {
     dragAndDropTypes.push(new DragAndDropType('modal', 'Modale déplaçable'));
     dragAndDropTypes.push(new DragAndDropType('handle', 'Déplacement par la poignée'));
     dragAndDropTypes.push(new DragAndDropType('connected', 'Transfert d\'éléments entre 2 listes'));
+    dragAndDropTypes.push(new DragAndDropType('puzzle', 'Puzzle'));
     return dragAndDropTypes;
   }
 }

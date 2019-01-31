@@ -16,4 +16,9 @@
     width: 300px;
     display: inline-block;
     vertical-align: top;
-  }
+}
+
+.puzzle-portion {
+    border-style: solid;
+    border-width: 1px;
+ }

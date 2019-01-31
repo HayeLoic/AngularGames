@@ -89,3 +89,8 @@
     </div>
   </div>
 </div>
+<div *ngIf="isSelectedDragAndDropType('puzzle')">
+  <img [src]="puzzleModel.imageLocation" [alt]="puzzleModel.name" class="drag-drop-element" cdkDrag>
+  <div class="drag-drop-element puzzle-portion" *ngFor="let puzzlePortion of puzzlePortions" cdkDrag [ngStyle]="setPuzzlePortionStyle(puzzlePortion)">
+  </div>
+</div>
